@@ -1,0 +1,12 @@
+EU_circo;code_région;nom_région;chef-lieu_région;numéro_département;nom_département;préfecture;numéro_circonscription;nom_commune;codes_postaux;code_insee;latitude;longitude;éloignement
+Nord-Ouest;25;Basse-Normandie;Caen;14;Calvados;Caen;6;Vire Normandie;14500;14762;48.833333;-0.883333;2.23
+Sud-Ouest;91;Languedoc-Roussillon;Montpellier;48;Lozère;Mende;1;Florac-Trois-Rivières;48400;48061;44.316667;3.6;1.3
+Ouest;52;Pays de la Loire;Nantes;49;Maine-et-Loire;Angers;7;Segré-en-Anjou Bleu;49500;49331;47.683333;-0.866667;1.66
+Nord-Ouest;25;Basse-Normandie;Caen;50;Manche;Saint-Lô;5;Cherbourg-en-Cotentin;50100;50129;49.65;-1.65;1.87
+Est;21;Champagne-Ardenne;Châlons-en-Champagne;51;Marne;Châlons-en-Champagne;6;Épernay;51200;51230;49.05;3.95;0.86
+Est;41;Lorraine;Metz;54;Meurthe-et-Moselle;Nancy;6;Val de Briey;54150;54099;49.25;5.933333;1.73
+Est;26;Bourgogne;Dijon;58;Nièvre;Nevers;3;Château-Chinon;58120;58062;47.07;3.93;
+Est;41;Lorraine;Metz;88;Vosges;Épinal;2;Saint-Dié-des-Vosges;88100;88413;48.283333;6.95;1.76
+Île-de-France;11;Île-de-France;Paris;91;Essonne;Évry;2;Étampes;91150;91223;48.433333;2.15;1.24
+Île-de-France;11;Île-de-France;Paris;94;Val-de-Marne;Créteil;12;L'Haÿ-les-Roses;94240;94038;48.783333;2.333333;1.92
+Sud-Est;82;Rhône-Alpes;Lyon;42;Loire;Saint-Étienne;1;Saint-Étienne;42000;42218;45.433333;4.4;1.32

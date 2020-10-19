@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="893fe98a-704d-41a8-8d4c-92a118065b29" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/pp2m_project.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/static/find_pp2m/js/map_with_weights.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/base_maps.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/best_to_meet_between_two_cities.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/contact.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/listing_dept.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/maps.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/near_to.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/one_dept.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/pp2m_distance.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/templates/find_pp2m/pp2m_distance_test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../find_pp2m/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../tools/calculations.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../tools/import_arrondissement_polygons.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../tools/import_cities.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../tools/import_geolocations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../find_pp2m/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/../find_pp2m/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../find_pp2m/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../find_pp2m/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../find_pp2m/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../find_pp2m/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/urls.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="1ZsxkOZd2jmCd1nGG4ggDsQDDGl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="893fe98a-704d-41a8-8d4c-92a118065b29" name="Default Changelist" comment="" />
+      <created>1585641747533</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585641747533</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
