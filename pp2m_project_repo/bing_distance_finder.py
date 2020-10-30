@@ -12,7 +12,7 @@ django.setup()
 from find_pp2m.models import City, Journey
 
 
-api_key = 'AIzaSyAYq-AcczCq1jWkM9g_v_KIY9S1sjmAkEg'
+api_key = ''
 
 dep_cities = City.objects.filter(is_pref='True')
 arr_cities = City.objects.filter(is_sous_pref='True')
