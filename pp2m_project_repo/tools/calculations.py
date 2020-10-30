@@ -17,48 +17,18 @@ def calculate_distance(city_A, city_B):
     return distance
 
 
-# def get_raw_distance_weighting(departure_cities_list, all_cities_list):
-#     # Calculate weighting for as the crow flies distances
-#     weightings = []
-#     nb_cities = len(departure_cities_list)
-#
-#     for city in all_cities_list:
-#         distance = 0
-#         for dep_city in departure_cities_list:
-#             distance += calculate_distance(dep_city[0], city)
-#
-#         weighting = distance / nb_cities
-#
-#         weightings.append(weighting)
-#
-#     return weightings
-#
-#
-# def get_route_distance_weighting(departure_cities_list, all_cities_list):
-#     # Calculate weighting for route distances
-#     weightings = []
-#     nb_cities = len(departure_cities_list)
-#
-#     for city in all_cities_list:
-#         distance = 0
-#         for dep_city in departure_cities_list:
-#             if dep_city[0] != city:
-#                 distance += Journey.objects.get(departure=dep_city[0].name, arrival=city.name).distance / 1000
-#
-#         weighting = distance / nb_cities
-#
-#         weightings.append(weighting)
-#
-#     return weightings
-
-
 def get_cities_weightings(departure_cities_list, all_cities_list, method, criteria):
     depts_weightings = []
     nb_cities = len(departure_cities_list)
 
+    # Get tuples with unique departure cities and their occurences in departure_cities_list
+    departure_cities_tuples = [(x, departure_cities_list.count(x)) for x in set(departure_cities_list)]
+
     for city in all_cities_list:
         city_weighting = 0
-        for dep_city in departure_cities_list:
+        for dep_city_tuple in departure_cities_tuples:
+            dep_city = dep_city_tuple[0]
+            dep_city_occurence = dep_city_tuple[1]
             if dep_city != city:
                 journey_weighting = 0
                 try:
@@ -72,7 +42,7 @@ def get_cities_weightings(departure_cities_list, all_cities_list, method, criter
                     print('Problème avec le trajet {} - {}'.format(dep_city.name, city.name))
 
                 if criteria == 'community':
-                    city_weighting += journey_weighting
+                    city_weighting += journey_weighting * dep_city_occurence
                 elif criteria == 'individual':
                     if journey_weighting > city_weighting:
                         city_weighting = journey_weighting
