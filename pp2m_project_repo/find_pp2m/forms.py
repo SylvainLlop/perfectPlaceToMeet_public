@@ -51,3 +51,22 @@ class CityForm(forms.Form):
         cleaned_data = super(CityForm, self).clean()
 
         return cleaned_data
+
+
+class JourneyForm(forms.Form):
+    city = forms.ModelChoiceField(queryset=City.objects.all(), label='Ville', required=False)
+    nb_people = forms.CharField(max_length=100, label='Gens', initial='1', required=False)
+    conveyance_choices = [
+        ("car", "En voiture"),
+        ("train", "En voiture"),
+    ]
+    conveyance = forms.CharField(widget=forms.Select(choices=conveyance_choices),
+                               initial='car',
+                               required=False,
+                               label='Moyen de transport')
+    
+    def clean(self):
+        cleaned_data = super(JourneyForm, self).clean()
+
+        return cleaned_data
+
