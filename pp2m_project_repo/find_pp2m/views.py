@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from django.forms import formset_factory
 
 from .models import City, Department
-from .forms import CityForm
+from .forms import ParamForm, JourneyForm
 from tools.calculations import *
 from itertools import chain
 
@@ -64,21 +64,21 @@ def pp2m_search(request, dep_cities_list, method, criteria):
 
 
 def pp2m_form(request):
+    JourneyFormSet = formset_factory(JourneyForm, extra=3)
     if request.method == 'POST':
-        form = CityForm(request.POST)
+        formset = JourneyFormSet(request.POST, request.FILES)
+        paramForm = ParamForm(request.POST)
+        if formset.is_valid() and paramForm.is_valid():
+            cities_list = [form.cleaned_data['city'] for form in formset]
 
-        if form.is_valid():
-            cities_list = []
-            for i_city in range(20):
-                city = 'city_{0:02}'.format(i_city + 1)
-                if not form.cleaned_data[city] is None:
-                    cities_list.append(form.cleaned_data[city])
-            method = form.cleaned_data['method']
-            criteria = form.cleaned_data['criteria']
+            method = paramForm.cleaned_data['method']
+            criteria = paramForm.cleaned_data['criteria']
 
             return pp2m_search(request, cities_list, method, criteria)
 
-    else:
-        form = CityForm()
 
-    return render(request, 'find_pp2m/pp2m_form.html', {'form': form})
+    else:
+        formset = JourneyFormSet()
+        paramForm = ParamForm()
+    return render(request, 'find_pp2m/pp2m_formset.html', {'journey_formset': formset, 'param_form': paramForm})
+

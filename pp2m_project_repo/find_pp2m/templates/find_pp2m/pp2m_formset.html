@@ -1,0 +1,93 @@
+{% extends "find_pp2m/base_maps.html" %}
+{% load bootstrap %}
+
+{% block title %}PP2M{% endblock %}
+
+
+{% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <form id="form-container" method="POST">
+        {% csrf_token %}
+        {{journey_formset.management_form}}
+        {% for form in journey_formset %}
+            <table width=100% class="form-row" id={{form.initial.id}}><tbody>
+                <tr>
+                    <td width="50%">{{form.city}}</td>
+                    <td width="20%">{{form.nb_people}}</td>
+                    <td width="20%">{{form.conveyance}}</td>
+                    <td width="10%"><button class="remove-form-row">-</button></td>
+                </tr>
+            </tbody></table>
+        {% endfor %}
+        <table id="lasttable" width=100%><tr>
+            <td width="90%" colspan="3"></td>
+            <td width="10%"><button id="add-form" type="button" class="row_button">+</button></td>
+        </tr></table>
+        <table id="lasttable" width=100%>
+            <tr><td>{{param_form.method}}</td></tr>
+            <tr><td>{{param_form.criteria}}</td></tr>
+        </table>
+        <input type="submit" value="Calculer" id="submit_button"/>
+    </form>
+
+    <script>
+        let journeyForm = document.querySelectorAll(".form-row")
+        let container = document.querySelector("#form-container")
+        let lastTable = document.querySelector("#lasttable")
+        let addButton = document.querySelector("#add-form")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+
+        let formNum = journeyForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = journeyForm[0].cloneNode(true)
+            let formRegex = RegExp(`form-(\\d){1}-`,'g')
+
+            formNum++
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+            container.insertBefore(newForm, lastTable)
+            
+            totalForms.setAttribute('value', `${formNum+1}`)
+        }
+    </script>
+
+    <script type='text/javascript'>
+    function updateElementIndex(el, prefix, ndx) {
+        var id_regex = new RegExp('(' + prefix + '-\\d+)');
+        var replacement = prefix + '-' + ndx;
+        if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+        if (el.id) el.id = el.id.replace(id_regex, replacement);
+        if (el.name) el.name = el.name.replace(id_regex, replacement);
+    }
+    function deleteForm(prefix, btn) {
+        var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        if (total > 1){
+            btn.closest('.form-row').remove();
+            var forms = $('.form-row');
+            $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+            for (var i=0, formCount=forms.length; i<formCount; i++) {
+                $(forms.get(i)).find(':input').each(function() {
+                    updateElementIndex(this, prefix, i);
+                });
+            }
+        }
+        return false;
+    }
+    $(document).on('click', '.remove-form-row', function(e){
+        e.preventDefault();
+        deleteForm('form', $(this));
+        return false;
+    });
+    </script>
+
+
+    
+
+{% endblock %}
+
+
+
+
