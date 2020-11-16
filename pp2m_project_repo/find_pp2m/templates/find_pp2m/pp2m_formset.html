@@ -18,25 +18,19 @@
                     <td width="10%"><button class="remove-form-row">-</button></td>
             </tbody></table>
         {% endfor %}
-        <table id="lasttable"></table>
-        <button id="add-form" type="button">+</button>
-        <table width=100%><tr>
+        <table id="lasttable" width=100%><tr>
             <td width="90%" colspan="3"></td>
-            <td width="10%"></td>
+            <td width="10%"><button id="add-form" type="button" class="row_button">+</button></td>
         </tr></table>
         <input type="submit" value="Calculer" id="submit_button"/>
-        
     </form>
 
     <script>
         let journeyForm = document.querySelectorAll(".form-row")
         let container = document.querySelector("#form-container")
         let lastTable = document.querySelector("#lasttable")
-        let addButton = document.querySelector("#add-form")
+        let addButton = document.querySelector(".add-form")
         let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
-
-        let tablecontainer = document.querySelector("#table-container")
-        let endTable = document.querySelector("#end-table")
 
         let formNum = journeyForm.length-1
         addButton.addEventListener('click', addForm)
@@ -49,7 +43,7 @@
 
             formNum++
             newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
-            container.insertBefore(newForm, addButton)
+            container.insertBefore(newForm, lastTable)
             
             totalForms.setAttribute('value', `${formNum+1}`)
         }
@@ -62,22 +56,6 @@
         if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
         if (el.id) el.id = el.id.replace(id_regex, replacement);
         if (el.name) el.name = el.name.replace(id_regex, replacement);
-    }
-    function cloneMore(selector, type) {
-        var newElement = $(selector).clone(true);
-        var total = $('#id_' + type + '-TOTAL_FORMS').val();
-        newElement.find(':input').each(function() {
-            var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
-            var id = 'id_' + name;
-            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-        });
-        newElement.find('label').each(function() {
-            var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
-            $(this).attr('for', newFor);
-        });
-        total++;
-        $('#id_' + type + '-TOTAL_FORMS').val(total);
-        $(selector).after(newElement);
     }
     function deleteForm(prefix, btn) {
         var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
@@ -93,11 +71,6 @@
         }
         return false;
     }
-    $(document).on('click', '.add-form-row', function(e){
-        e.preventDefault();
-        cloneMore('.form-row:last', 'form');
-        return false;
-    });
     $(document).on('click', '.remove-form-row', function(e){
         e.preventDefault();
         deleteForm('form', $(this));

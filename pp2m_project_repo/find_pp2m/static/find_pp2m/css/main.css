@@ -73,16 +73,50 @@ h6 {
   margin-top: 20px;
 }
 
-#row_button {
-  background-color: #add8e6;
-  border: none;
-  color: #191970;
-  padding: 10px 16px;
-  font-size: 8px;
-  display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 0px;
+.remove-form-row {
+	background-color:#2dabf9;
+	border-radius:5px;
+	border:1px solid #191970;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:12px;
+	padding:0px 14px;
+	text-decoration:none;
+  height: 20px;
+  width: 40px;
+}
+.remove-form-row:hover {
+	background-color:#0688fa;
+}
+.remove-form-row:active {
+	position:relative;
+	top:1px;
+}
+
+.row_button {
+	box-shadow:inset 0px -3px 7px 0px #29bbff;
+	background-color:#2dabf9;
+	border-radius:5px;
+	border:1px solid #191970;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:10px;
+	padding:0px 14px;
+	text-decoration:none;
+  text-shadow:0px 1px 0px #263666;
+  height: 20px;
+  width: 40px;
+}
+.row_button:hover {
+	background-color:#0688fa;
+}
+.row_button:active {
+	position:relative;
+	top:1px;
 }
 
 #information_button {
