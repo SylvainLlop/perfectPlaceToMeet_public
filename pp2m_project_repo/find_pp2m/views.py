@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from django.forms import formset_factory
 
 from .models import City, Department
-from .forms import CityForm, JourneyForm
+from .forms import ParamForm, JourneyForm
 from tools.calculations import *
 from itertools import chain
 
@@ -67,9 +67,18 @@ def pp2m_form(request):
     JourneyFormSet = formset_factory(JourneyForm, extra=3)
     if request.method == 'POST':
         formset = JourneyFormSet(request.POST, request.FILES)
-        if formset.is_valid():
-            print(formset.cleaned_data)
+        paramForm = ParamForm(request.POST)
+        if formset.is_valid() and paramForm.is_valid():
+            cities_list = [form.cleaned_data['city'] for form in formset]
+
+            method = paramForm.cleaned_data['method']
+            criteria = paramForm.cleaned_data['criteria']
+
+            return pp2m_search(request, cities_list, method, criteria)
+
+
     else:
         formset = JourneyFormSet()
-    return render(request, 'find_pp2m/pp2m_formset.html', {'journey_formset': formset})
+        paramForm = ParamForm()
+    return render(request, 'find_pp2m/pp2m_formset.html', {'journey_formset': formset, 'param_form': paramForm})
 

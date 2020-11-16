@@ -16,12 +16,17 @@
                     <td width="20%">{{form.nb_people}}</td>
                     <td width="20%">{{form.conveyance}}</td>
                     <td width="10%"><button class="remove-form-row">-</button></td>
+                </tr>
             </tbody></table>
         {% endfor %}
         <table id="lasttable" width=100%><tr>
             <td width="90%" colspan="3"></td>
             <td width="10%"><button id="add-form" type="button" class="row_button">+</button></td>
         </tr></table>
+        <table id="lasttable" width=100%>
+            <tr><td>{{param_form.method}}</td></tr>
+            <tr><td>{{param_form.criteria}}</td></tr>
+        </table>
         <input type="submit" value="Calculer" id="submit_button"/>
     </form>
 
