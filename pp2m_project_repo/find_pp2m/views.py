@@ -64,12 +64,13 @@ def pp2m_search(request, dep_cities_list, method, criteria):
 
 
 def pp2m_form(request):
-    JourneyFormSet = formset_factory(JourneyForm, extra=3)
+    JourneyFormSet = formset_factory(JourneyForm, extra=3, can_delete=True)
     if request.method == 'POST':
         formset = JourneyFormSet(request.POST, request.FILES)
         paramForm = ParamForm(request.POST)
+
         if formset.is_valid() and paramForm.is_valid():
-            cities_list = [form.cleaned_data['city'] for form in formset]
+            cities_list = [form.cleaned_data['city'] for form in formset if form.cleaned_data['city'] is not None]
 
             method = paramForm.cleaned_data['method']
             criteria = paramForm.cleaned_data['criteria']
