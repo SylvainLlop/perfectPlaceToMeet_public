@@ -12,7 +12,7 @@ class JourneyForm(forms.Form):
     ]
     conveyance = forms.CharField(widget=forms.Select(choices=conveyance_choices),
                                initial='car',
-                               required=False,
+                               required=True,
                                label='Moyen de transport')
     
     def clean(self):
