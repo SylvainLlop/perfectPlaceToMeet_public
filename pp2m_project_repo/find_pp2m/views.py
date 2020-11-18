@@ -52,7 +52,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
     dep_cities_list = [x['city'] for x in dep_cities_dict]
     all_entities_json = serializers.serialize('json', entities_combined, fields=('name', 'polygon'))
     weightings_json = json.dumps(weightings)
-    cities_json = serializers.serialize('json', dep_cities_list, fields='name')
+    cities_json = serializers.serialize('json', dep_cities_list, fields=('name', 'latitude', 'longitude'))
     # cities_json = json.dumps(dep_cities_name_list)
     method_json = json.dumps(method)
 

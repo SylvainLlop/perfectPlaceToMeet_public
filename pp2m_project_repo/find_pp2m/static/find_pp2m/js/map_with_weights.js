@@ -34,7 +34,7 @@ function getHexaColorFromValue(number) {
     return rgbToHex(255, number, number);
 }
 
-// Marker function
+// Polygon function
 function addPolygonToCard(carte, coords, value, value_min, value_max) {
     var markerOptions = {opacity: 1};
     if (value == value_min) {
@@ -52,8 +52,14 @@ function addPolygonToCard(carte, coords, value, value_min, value_max) {
     var popup = polygon.bindPopup(coords["name"].concat(" (", value.toFixed(2), ")"));  //
 }
 
+// Marker function
+function addMarkerToCard(initial_city) {
+    var marker = L.marker([initial_city["latitude"], initial_city["longitude"]]).addTo(macarte);
+    var popup = marker.bindPopup(initial_city["name"]);  //
+}
+
 // Fonction d'initialisation de la carte
-function initMap(macarte, entities, weightings, weighting_min, weighting_max) {              //
+function initMap(macarte, entities, weightings, weighting_min, weighting_max, initial_cities) {              //
     // Get maps data on openstreetmap.fr
     L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
         attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
@@ -65,8 +71,12 @@ function initMap(macarte, entities, weightings, weighting_min, weighting_max) { 
     for(var i = 0; i < entities.length; i++) {
         addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min, weighting_max);
     }
-}
 
+    // Markers
+    for(var i = 0; i < initial_cities.length; i++) {
+        addMarkerToCard(initial_cities[i]["fields"]);
+    }
+}
 
 // Fonction pour retourner le chiffre en fonction de la méthode
 function composeValue(entity, weighting, method) {
