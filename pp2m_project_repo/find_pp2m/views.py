@@ -17,12 +17,12 @@ def index(request):
     return HttpResponse(response)
 
 
-def pp2m_search(request, dep_cities_list, method, criteria):
+def pp2m_search(request, dep_cities_dict, method, criteria):
     keep_top = 10
 
     # Calculate weight for each department
     all_prefs = City.objects.filter(is_pref='True')
-    depts_weightings = get_cities_weightings(dep_cities_list, all_prefs, method, criteria)
+    depts_weightings = get_cities_weightings(dep_cities_dict, all_prefs, method, criteria)
 
     # Separate top and bottom weights
     depts_weightings = sorted(depts_weightings, key=lambda weight: weight[1])
@@ -37,7 +37,7 @@ def pp2m_search(request, dep_cities_list, method, criteria):
     # Get cities from top department weights
     top_depts_list = [x[0] for x in top_depts_weightings]
     top_cities = City.objects.filter(num_department__in=top_depts_list)
-    top_cities_weightings = get_cities_weightings(dep_cities_list, top_cities, method, criteria)
+    top_cities_weightings = get_cities_weightings(dep_cities_dict, top_cities, method, criteria)
 
     # Isolate weightings from results
     bot_depts_weightings_values = [x[1] for x in bot_depts_weightings]
@@ -49,6 +49,7 @@ def pp2m_search(request, dep_cities_list, method, criteria):
     weightings, entities_combined = (list(t) for t in zip(*sorted(zip(weightings, entities_combined), key=lambda x: x[0])))
 
     # Convert in JSON
+    dep_cities_list = [x['city'] for x in dep_cities_dict]
     all_entities_json = serializers.serialize('json', entities_combined, fields=('name', 'polygon'))
     weightings_json = json.dumps(weightings)
     cities_json = serializers.serialize('json', dep_cities_list, fields='name')
@@ -69,16 +70,13 @@ def pp2m_form(request):
         formset = JourneyFormSet(request.POST, request.FILES)
         paramForm = ParamForm(request.POST)
 
-        print(formset.cleaned_data)
-
         if formset.is_valid() and paramForm.is_valid():
-            row_data_cleaned = [form.cleaned_data for form in formset if len(form.cleaned_data) > 0]
-            cities_list = [form['city'] for form in row_data_cleaned]
+            cities_dict = [form.cleaned_data for form in formset if len(form.cleaned_data) > 0]
 
             method = paramForm.cleaned_data['method']
             criteria = paramForm.cleaned_data['criteria']
 
-            return pp2m_search(request, cities_list, method, criteria)
+            return pp2m_search(request, cities_dict, method, criteria)
 
 
     else:

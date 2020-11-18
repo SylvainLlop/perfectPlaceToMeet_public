@@ -17,12 +17,12 @@ def calculate_distance(city_A, city_B):
     return distance
 
 
-def get_cities_weightings(departure_cities_list, all_cities_list, method, criteria):
+def get_cities_weightings(departure_cities_dict, all_cities_list, method, criteria):
     depts_weightings = []
-    nb_cities = len(departure_cities_list)
+    nb_cities = len(departure_cities_dict)
 
     # Get tuples with unique departure cities and their occurences in departure_cities_list
-    departure_cities_tuples = [(x, departure_cities_list.count(x)) for x in set(departure_cities_list)]
+    departure_cities_tuples = [(x['city'], int(x['nb_people'])) for x in departure_cities_dict]
 
     for city in all_cities_list:
         city_weighting = 0
