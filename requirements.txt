@@ -84,7 +84,4 @@ urllib3==1.25.8
 virtualenv==16.7.9
 Werkzeug==0.16.0
 whitenoise==5.2.0
-win32core==221.36
-win32gui==221.6
 wrapt==1.11.2
-xlrd==1.2.0
