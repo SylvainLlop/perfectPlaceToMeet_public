@@ -1,1 +1,1 @@
-web: gunicorn pp2m_project_repo/pp2m_project.wsgi
+web: gunicorn pp2m_project.wsgi
