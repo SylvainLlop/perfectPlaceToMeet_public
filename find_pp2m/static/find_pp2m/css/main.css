@@ -49,6 +49,10 @@ input {
   text-align: center;
 }
 
+.select2{
+  width: 1px;
+}
+
 input[type=text], select {
   width: 90%;
   height: 25px;

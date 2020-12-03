@@ -10,6 +10,7 @@ from .models import City, Department
 from .forms import ParamForm, JourneyForm
 from tools.calculations import *
 from itertools import chain
+from dal import autocomplete
 
 
 def index(request):
@@ -84,3 +85,16 @@ def pp2m_form(request):
         paramForm = ParamForm()
     return render(request, 'find_pp2m/pp2m_formset.html', {'journey_formset': formset, 'param_form': paramForm})
 
+
+class CityAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # # Don't forget to filter out results depending on the visitor !
+        # if not self.request.user.is_authenticated:
+        #     return City.objects.none()
+
+        qs = City.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs

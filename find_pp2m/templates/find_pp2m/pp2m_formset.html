@@ -1,11 +1,15 @@
 {% extends "find_pp2m/base_maps.html" %}
 {% load bootstrap %}
+{% load static %}
 
 {% block title %}PP2M{% endblock %}
 
 
 {% block content %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}" />
+    {{ journey_formset.media }}
+
     <form id="form-container" method="POST">
         <table width=100%><tbody>
             <tr>
@@ -30,7 +34,7 @@
         {% endfor %}
         <table id="lasttable" width=100%><tr>
             <td width="90%" colspan="3"></td>
-            <td width="10%" align="center"><button id="add-form" type="button" class="row_button">+</button></td>
+            <td width="10%" align="center"><type="button" class="row_button" button id="add-form">+</button></td>
         </tr></table>
         <table id="params" width=100%>
             <tr height="10px"></tr>
@@ -77,6 +81,12 @@
             container.insertBefore(newForm, lastTable)
             
             totalForms.setAttribute('value', `${formNum+1}`)
+
+            let duplicatedSelect = newForm.querySelector(".select2-container")
+            duplicatedSelect.parentNode.removeChild(duplicatedSelect); 
+
+            let uniqueSelect = newForm.querySelector(".select2-container")
+            uniqueSelect.style.width = "90%"
         }
     </script>
 
@@ -108,9 +118,6 @@
         return false;
     });
     </script>
-
-
-    
 
 {% endblock %}
 
