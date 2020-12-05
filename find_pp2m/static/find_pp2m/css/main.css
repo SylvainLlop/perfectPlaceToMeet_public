@@ -49,7 +49,7 @@ input {
   text-align: center;
 }
 
-.select2{
+.select2-container{
   width: 1px;
 }
 
@@ -188,6 +188,10 @@ input:active {
 .list{
   padding-left: 30px;
   padding-top: none;
+}
+
+.select2{
+  width: 1px;
 }
 
 /* 
