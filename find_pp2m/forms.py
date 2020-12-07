@@ -1,6 +1,5 @@
 from django import forms
 from dal import autocomplete
-from easy_select2 import Select2
 
 from .models import City
 
