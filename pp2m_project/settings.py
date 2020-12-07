@@ -35,7 +35,6 @@ ALLOWED_HOSTS = ['theperfectplacetomeet.herokuapp.com']
 INSTALLED_APPS = [
     'dal',
     'dal_select2',
-    'easy_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
