@@ -53,6 +53,16 @@ input {
   width: 1px;
 }
 
+input[type=number] {
+  width: 90%;
+  height: 25px;
+  margin: 2px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 input[type=text], select {
   width: 90%;
   height: 25px;
