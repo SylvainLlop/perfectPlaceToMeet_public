@@ -9,12 +9,27 @@
     <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
     {{ journey_formset.media }}
 
+
+    <div align="center" style="margin-bottom: 20px">
+        L'application pour trouver la ville idéale où se retrouver, en famille ou entre amis, quand on vient de toute la France 
+        <img src="{% static 'find_pp2m/images/btn_info.png' %}" alt="Infos" height="35px" onclick="show_hide_id('intro')" valign="middle">
+    </div>
+    <div id="intro" style="display: none;" class="inside-box" style="margin-bottom: 20px">
+        <table>
+            <tr>
+                <td align="center">
+                    Pour gagner en rapidité, seulement les préféctures et sous-préfectures sont disponibles pour le calcul
+                </td>
+            </tr>
+        </table>
+    </div>
     <form id="form-container" method="POST">
+
         <table width=100%><tbody>
             <tr>
-                <td width="50%" align="center">Ville</td>
-                <td width="10%" align="center">Personnes</td>
-                <td width="30%" align="center">Mode de transport</td>
+                <td width="50%" align="center"><img src="{% static 'find_pp2m/images/icon_location.png' %}" alt="Ville" height="30px"></td>
+                <td width="10%" align="center"><img src="{% static 'find_pp2m/images/icon_people.png' %}" alt="Nb de personnes" height="30px"></td>
+                <td width="30%" align="center"><img src="{% static 'find_pp2m/images/icon_conveyance.png' %}" alt="Moyen de transport" height="30px"></td>
                 <td width="10%" align="center"></td>
             </tr>
         </tbody></table>
@@ -40,18 +55,40 @@
             <tr height="10px"></tr>
             <tr>
                 <td width="5%"></td>
-                <td width="20%">Méthode</td>
+                <td width="20%">Méthode de calcul</td>
                 <td width="40%">{{param_form.method}}</td>
                 <td width="35%"></td>
             </tr>
             <tr height="5px"></tr>
             <tr>
                 <td width="5%"></td>
-                <td width="20%">Critère</td>
+                <td width="20%">Critère d'optimisation</td>
                 <td width="40%">{{param_form.criteria}}</td>
-                <td width="35%"></td>
+                <td width="35%"><div>
+                    <img src="{% static 'find_pp2m/images/btn_info.png' %}" alt="Infos" height="35px" onclick="show_hide_id('infos')" valign="middle">
+                </div>
+                </td>
             </tr>
         </table>
+        <div id="infos" style="display: none;" class="inside-box">
+            <table>
+                <tr>
+                    <td width="45%" align="center" valign="top"><b>Minimiser la somme globale des déplacements</b></td>
+                    <td width="10%"></td>
+                    <td width="45%" align="center" valign="top"><b>Minimiser le trajet le plus long</b></td>
+                </tr>
+                <tr>
+                    <td width="45%" align="center" valign="top">La ville choisie réduira la somme totale des déplacements du groupe. Aussi, cette solution sera la moins chère si les frais sont partagés.</td>
+                    <td width="10%"></td>
+                    <td width="45%" align="center" valign="top">La ville choisie réduira le déplacement de la personne la plus éloignée. Ainsi, cela évite qu'un individu ait un trop long trajet à effectuer.</td>
+                </tr>
+                <tr>
+                    <td width="45%" align="center"><img src="{% static 'find_pp2m/images/img_community.png' %}" alt="Infos" height="120px"></td>
+                    <td width="10%"></td>
+                    <td width="45%" align="center"><img src="{% static 'find_pp2m/images/img_individual.png' %}" alt="Infos" height="120px"></td>
+                </tr>
+            </table>
+        </div>
         <table width=100% align="center">
             <tr>
                 <td width=100% align="center"><input type="submit" value="Calculer" id="submit_button"/></td>
@@ -146,6 +183,14 @@
     $('#add_more').click(function() {
         cloneMore('.form-row:last', 'form');
     });
+
+    function show_hide_id(id_name) {
+            if (document.getElementById(id_name).style.display == "") {
+                document.getElementById(id_name).style.display = "none"
+            } else {
+                document.getElementById(id_name).style.display = ""
+            }
+        }
     </script>
 
 {% endblock %}--!>
