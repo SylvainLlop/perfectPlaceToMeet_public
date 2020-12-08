@@ -204,6 +204,16 @@ input:active {
   width: 1px;
 }
 
+.inside-box {
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background: #f5e3de;
+  border: 1px solid #add8e6;
+}
+
 /* 
 .class
 #id

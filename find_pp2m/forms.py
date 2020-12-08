@@ -32,8 +32,8 @@ class ParamForm(forms.Form):
                                required=True,
                                label='Méthode de calcul')
     criteria_choices = [
-        ("community", "Collectif"),
-        ("individual", "Individuel"),
+        ("community", "Minimiser la somme globale des déplacements"),
+        ("individual", "Minimiser le trajet le plus long"),
     ]
     criteria = forms.CharField(widget=forms.Select(choices=criteria_choices),
                                initial='community',
