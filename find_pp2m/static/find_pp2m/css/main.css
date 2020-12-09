@@ -104,13 +104,14 @@ input:active {
 }
 
 #box {
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: auto;
+    margin-right: auto;
     padding: 10px;
     margin-top: 20px;
     margin-bottom: 20px;
     background: #f5e3de;
     border: 1px solid #add8e6;
+    max-width: 800px;
 }
 
 .formbox {
@@ -212,6 +213,27 @@ input:active {
   margin-bottom: 20px;
   background: #f5e3de;
   border: 1px solid #add8e6;
+}
+
+table.resultsTable {
+  border: 2px solid #F5E3DE;
+  width: 50%;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.resultsTable tr {
+  border: 1px solid #ADD8E6;
+  padding: 3px 3px;
+}
+table.resultsTable thead {
+    border-bottom: 3px solid #ADD8E6;
+}
+table.resultsTable thead th {
+  font-weight: bold;
+  text-align: center;
+}
+table.resultsTable tfoot td {
+  font-size: 14px;
 }
 
 /* 
