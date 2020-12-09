@@ -51,10 +51,11 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
 
     # Convert in JSON
     dep_cities_list = [x['city'] for x in dep_cities_dict]
+    dep_cities_nbpeople = [x['nb_people'] for x in dep_cities_dict]
     all_entities_json = serializers.serialize('json', entities_combined, fields=('name', 'polygon'))
     weightings_json = json.dumps(weightings)
     cities_json = serializers.serialize('json', dep_cities_list, fields=('name', 'latitude', 'longitude'))
-    # cities_json = json.dumps(dep_cities_name_list)
+    nbpeople_json = json.dumps(dep_cities_nbpeople)
     method_json = json.dumps(method)
 
     return render(request, 'find_pp2m/pp2m_distance.html', {
@@ -62,6 +63,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
         'method': method_json,
         'all_entities': all_entities_json,
         'weightings': weightings_json,
+        'nb_people': nbpeople_json,
     })
 
 

@@ -8,64 +8,84 @@
                 integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
                 crossorigin="">
         </script>
+        {% load static %}
+        <script type="text/javascript" src="{% static 'find_pp2m/js/map_with_weights.js' %}"></script>
         <script type="text/javascript">
             var entities = {{ all_entities | safe }};
             var weightings = {{ weightings | safe }};
+            var nbpeople = {{ nb_people | safe }};
             var initial_cities = {{ initial_cities | safe }};
             var method = {{ method | safe }};
 
             if (method == 'route_duration') {
                 var numformat = 2;
-                var strmethod = 'par temps en voiture (temps moyen par personne)';
+                var strmethod = 'par temps en voiture';
+                var straverage = 'Temps moyen par personne';
             } else if (method == 'route_distance') {
                 var numformat = 1;
-                var strmethod = 'par distance en voiture (distance moyenne par personne)';
+                var strmethod = 'par distance en voiture';
+                var straverage = 'Distance moyenne par personne';
             } else if (method == 'route_distance') {
                 var numformat = 1;
-                var strmethod = "par distance à vol d'oiseau (distance moyenne par personne)";
+                var strmethod = "par distance à vol d'oiseau";
+                var straverage = 'Distance moyenne par personne';
             }
         </script>
 
         <div>
-            <p>Villes de départ:</p>
-            <div id="InitialCitiesList" class="list"></div>
+            <p align="center">Résultats <script>document.write(strmethod)</script> :</p>
+            <table id="TopResults" class="resultsTable" style="max-width:600px" align="center"></table>
         </div>
         <script>
-            var wrapper = document.getElementById("InitialCitiesList");
-            var myHTML = '';
-            for(var i = 0; i < initial_cities.length; i++) {
-                myHTML += '<li>' + initial_cities[i]["fields"]["name"] + '</li>';
-            }
+            var wrapper = document.getElementById("TopResults");
+            var myHTML = '<thead>';
+            myHTML += '<td width="60%">Ville</td>';
+            myHTML += '<td width="20%">' + straverage + '</td>';
+            myHTML += '<td width="20%">Ecart</td>';
+            myHTML += '</thead>';
+            var i = 0;
+            do {
+                var composed_value = retrieveFormatedValue(weightings[i], method);
+                var plusvalue = 100 * (weightings[i] - weightings[0]) / weightings[0];
+                myHTML += '<tr>';
+                myHTML += '<td align="center">' + entities[i]["fields"]["name"] + '</td>';
+                myHTML += '<td align="center">' + composed_value + '</td>';
+                if (i == 0) {
+                    myHTML += '<td align="center">-</td>';
+                } else {
+                    myHTML += '<td align="center"> +' + plusvalue.toFixed(1) + '%</td>';
+                }
+                myHTML += '</tr>';
+                if (i == 9) {
+                    break;
+                }
+                i += 1;
+            } while (weightings[i] < weightings[0] * 1.15)
             wrapper.innerHTML = myHTML;
         </script>
 
         <div id="map">
 	        <!-- Map appears here -->
 	    </div>
-
-        {% load static %}
         <script type="text/javascript" src="{% static 'find_pp2m/js/map_with_weights.js' %}"></script>
         <script type="text/javascript">
             // Initialisation function
             window.onload = function(){
-            initMap(macarte, entities, weightings, weighting_min, weighting_max, initial_cities);
+            initMap(macarte, entities, weightings, initial_cities);
             }
         </script>
 
-
-        <div>
-            <p>Résultats <script>document.write(strmethod)</script> :</p>
-            <div id="TopResults" class="list"></div>
-        </div>
+        <div id="InitialCitiesList" align="center"></div>
         <script>
-            var wrapper = document.getElementById("TopResults");
-            var myHTML = '';
-            for(var i = 0; i < 10; i++) {
-                var composed_value = composeValue(entities[i]["fields"]["name"], weightings[i], method);
-                myHTML += '<li>' + composed_value + '</li>';
+            var wrapper = document.getElementById("InitialCitiesList");
+            var myHTML = 'Villes de départ: ';
+            for(var i = 0; i < initial_cities.length; i++) {
+                myHTML += initial_cities[i]["fields"]["name"] + ' (x' + nbpeople[i].toString() + '), ';
             }
+            myHTML = myHTML.substring(0, myHTML.length - 2)
             wrapper.innerHTML = myHTML;
         </script>
+
 
     </body>
 {% endblock %}
