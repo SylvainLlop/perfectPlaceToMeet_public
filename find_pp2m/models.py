@@ -7,13 +7,15 @@ class City(models.Model):
     postal_code = models.CharField(max_length=5, verbose_name='code postal')
     is_pref = models.BooleanField(default=False, verbose_name='préfecture')
     is_sous_pref = models.BooleanField(default=False, verbose_name='sous-préfecture')
+    pref_name = models.CharField(max_length=200, default=name)
+    code_insee = models.CharField(max_length=200, default='')
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
     polygon = models.TextField(null=True)
 
     class Meta:
         verbose_name = 'ville'
-        ordering = ['name']
+        ordering = ['-is_pref', '-is_sous_pref', 'name']
 
     def __str__(self):
         return_str = '{} ({})'.format(self.name, self.num_department)

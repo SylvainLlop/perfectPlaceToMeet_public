@@ -35,11 +35,11 @@ def get_cities_weightings(departure_cities_dict, all_cities_list, method, criter
                     if method == 'raw_distance':
                         journey_weighting = calculate_distance(dep_city, city)
                     elif method == 'route_distance':
-                        journey_weighting = Journey.objects.get(departure=dep_city.name, arrival=city.name).distance / 1000
+                        journey_weighting = Journey.objects.get(departure=dep_city.pref_name, arrival=city.name).distance / 1000
                     elif method == 'route_duration':
-                        journey_weighting = Journey.objects.get(departure=dep_city.name, arrival=city.name).duration / 3600
+                        journey_weighting = Journey.objects.get(departure=dep_city.pref_name, arrival=city.name).duration / 3600
                 except:
-                    print('Problème avec le trajet {} - {}'.format(dep_city.name, city.name))
+                    print('Problème avec le trajet {} - {}'.format(dep_city.pref_name, city.name))
 
                 if criteria == 'community':
                     city_weighting += journey_weighting * dep_city_occurence

@@ -2,6 +2,7 @@ import json
 from django.shortcuts import HttpResponse, render, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.core import serializers
+from django.db.models import Q
 
 from django.views.generic import TemplateView
 from django.forms import formset_factory
@@ -37,7 +38,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
 
     # Get cities from top department weights
     top_depts_list = [x[0] for x in top_depts_weightings]
-    top_cities = City.objects.filter(num_department__in=top_depts_list)
+    top_cities = City.objects.filter(num_department__in=top_depts_list).filter(Q(is_pref=True) | Q(is_sous_pref=True))
     top_cities_weightings = get_cities_weightings(dep_cities_dict, top_cities, method, criteria)
 
     # Isolate weightings from results
