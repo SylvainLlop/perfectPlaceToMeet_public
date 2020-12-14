@@ -13,6 +13,8 @@ from tools.calculations import *
 from itertools import chain
 from dal import autocomplete
 
+import re
+
 
 def index(request):
     response = 'Hello, world'
@@ -98,6 +100,14 @@ class CityAutocomplete(autocomplete.Select2QuerySetView):
         qs = City.objects.all()
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            self.q = re.sub('[aàâäAÀÁÂÃÄÅÆ]', 'a', self.q)
+            self.q = re.sub('[cçC]', 'c', self.q)
+            self.q = re.sub('[eéèêëEÉÈÊË]', 'e', self.q)
+            self.q = re.sub('[iïîIÌÍÎÏ]', 'i', self.q)
+            self.q = re.sub('[oôöÒÓÔÕÖ]', 'o', self.q)
+            self.q = re.sub('[uüûùUÜÛÙÚ]', 'u', self.q)
+            self.q = re.sub('[yYÿÝ]', 'y', self.q)
+            self.q = self.q.lower()
+            qs = qs.filter(slug__istartswith=self.q)
 
         return qs

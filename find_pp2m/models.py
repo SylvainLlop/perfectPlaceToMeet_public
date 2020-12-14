@@ -3,6 +3,7 @@ from django.db import models
 
 class City(models.Model):
     name = models.CharField(max_length=200, verbose_name='nom')
+    slug = models.CharField(max_length=200, default='')
     num_department = models.CharField(max_length=3, verbose_name='département')
     postal_code = models.CharField(max_length=5, verbose_name='code postal')
     is_pref = models.BooleanField(default=False, verbose_name='préfecture')
