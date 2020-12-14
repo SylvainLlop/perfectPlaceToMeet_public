@@ -2,6 +2,7 @@ import json
 from django.shortcuts import HttpResponse, render, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.core import serializers
+from django.db.models import Q
 
 from django.views.generic import TemplateView
 from django.forms import formset_factory
@@ -11,6 +12,8 @@ from .forms import ParamForm, JourneyForm
 from tools.calculations import *
 from itertools import chain
 from dal import autocomplete
+
+import re
 
 
 def index(request):
@@ -37,7 +40,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
 
     # Get cities from top department weights
     top_depts_list = [x[0] for x in top_depts_weightings]
-    top_cities = City.objects.filter(num_department__in=top_depts_list)
+    top_cities = City.objects.filter(num_department__in=top_depts_list).filter(Q(is_pref=True) | Q(is_sous_pref=True))
     top_cities_weightings = get_cities_weightings(dep_cities_dict, top_cities, method, criteria)
 
     # Isolate weightings from results
@@ -97,6 +100,14 @@ class CityAutocomplete(autocomplete.Select2QuerySetView):
         qs = City.objects.all()
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            self.q = re.sub('[aàâäAÀÁÂÃÄÅÆ]', 'a', self.q)
+            self.q = re.sub('[cçC]', 'c', self.q)
+            self.q = re.sub('[eéèêëEÉÈÊË]', 'e', self.q)
+            self.q = re.sub('[iïîIÌÍÎÏ]', 'i', self.q)
+            self.q = re.sub('[oôöÒÓÔÕÖ]', 'o', self.q)
+            self.q = re.sub('[uüûùUÜÛÙÚ]', 'u', self.q)
+            self.q = re.sub('[yYÿÝ]', 'y', self.q)
+            self.q = self.q.lower()
+            qs = qs.filter(slug__istartswith=self.q)
 
         return qs
