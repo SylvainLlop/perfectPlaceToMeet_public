@@ -24,23 +24,20 @@
             if (method == 'route_duration') {
                 var numformat = 2;
                 var strmethod = 'par temps en voiture';
-                var straverage = 'Temps moyen par personne';
             } else if (method == 'route_distance') {
                 var numformat = 1;
                 var strmethod = 'par distance en voiture';
-                var straverage = 'Distance moyenne par personne';
-            } else if (method == 'route_distance') {
+            } else if (method == 'raw_distance') {
                 var numformat = 1;
                 var strmethod = "par distance à vol d'oiseau";
-                var straverage = 'Distance moyenne par personne';
             }
-        </script>
 
-        <div>
-            <p align="center">Résultats <script>document.write(strmethod)</script> :</p>
-            <table id="TopResults" class="resultsTable" style="max-width:600px" align="center"></table>
-        </div>
-        <script type="text/javascript">
+            if (criteria_ini == 'community') {
+                var straverage = 'Moyenne';
+            } else if (criteria_ini == 'individual') {
+                var straverage = 'Valeur la plus grande';
+            }
+
             function writeTabResults(entities, weightings, method, straverage) {
                 var wrapper = document.getElementById("TopResults");
                 var myHTML = '<thead>';
@@ -70,57 +67,55 @@
             }
         </script>
 
-        <div id="map">
-        <script>
+        <div>
+            <p align="center">Résultats <script>document.write(strmethod)</script> :</p>
+            <table id="TopResults" class="resultsTable" style="max-width:600px" align="center"></table>
+        </div>
+
+        <div id="map"></div>
+
+        <script type="text/javascript" src="{% static 'find_pp2m/js/map_with_weights.js' %}"></script>
+        <script type="text/javascript">
             // Get prefecture coordinates
             var pref_lat = 46.599;
             var pref_lon = 2.4958;
         
             // Initialize map centered in Null Island
             var macarte = L.map('map').setView([pref_lat, pref_lon], 5);
-            
-            // Get maps data on openstreetmap.fr
-            L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-                attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
-                minZoom: 1,
-                maxZoom: 10
-            }).addTo(macarte);
-        </script>
-	    </div>
-        <script type="text/javascript" src="{% static 'find_pp2m/js/map_with_weights.js' %}"></script>
-        <script type="text/javascript">
-            // Initialisation function
-            window.onload = function(){
-                if (criteria_ini == 'community') {
-                    var entities = entities_com;
-                    var weightings = weightings_com;
-                } else if (criteria_ini == 'individual') {
-                    var entities = entities_ind;
-                    var weightings = weightings_ind;
-                }
-            writeTabResults(entities, weightings, method, straverage);
-            var macarte = initMap(entities, weightings, initial_cities);
-            }
-        </script>
 
-        <script type="text/javascript">
-            function switchCriteria(initial_cities, entities, weightings, method, criteria, straverage) {
-                if (criteria == 'community') {
-                    criteria = 'individual';                    
-                } else if (criteria == 'individual') {
-                    criteria = 'community';
-                }
+            function switchCriteria(initial_cities, method, criteria, straverage) {
+                eraseOldLayers();
+                loadData(initial_cities, method, criteria, straverage);
+            }
+            
+            function loadData(initial_cities, method, criteria, straverage) {
                 if (criteria == 'community') {
                     var entities = entities_com;
                     var weightings = weightings_com;
+                    var straverage = 'Moyenne';
+                    document.getElementById("btn_community").style.display = "none"
+                    document.getElementById("btn_individual").style.display = ""               
                 } else if (criteria == 'individual') {
                     var entities = entities_ind;
                     var weightings = weightings_ind;
+                    var straverage = 'Valeur la plus grande';
+                    document.getElementById("btn_community").style.display = ""
+                    document.getElementById("btn_individual").style.display = "none"
                 }
                 writeTabResults(entities, weightings, method, straverage);
-                changeMap(entities, weightings, initial_cities);
+                initMap(entities, weightings, initial_cities);
             }
-            
+
+            function eraseOldLayers() {
+                macarte.eachLayer(function (layer) {
+                    macarte.removeLayer(layer);
+                });
+            }
+
+            // Initialisation function
+            window.onload = function() {
+                loadData(initial_cities, method, criteria_ini, straverage);
+            }
         </script>
 
 
@@ -135,10 +130,17 @@
             wrapper.innerHTML = myHTML;
         </script>
 
-        <table><tr>
-            <td><type="button" class="row_button" onclick="switchCriteria(initial_cities, entities_ind, weightings_ind, method, 'community', straverage)">Collectif</button></td>
-            <td><type="button" class="row_button" onclick="switchCriteria(initial_cities, entities_ind, weightings_ind, method, 'individual', straverage)">Individual</button></td>
-        </tr></table>
+        <table align="center">
+            <tr><td>
+                <type="button" id="btn_community" class="switch_button" onclick="switchCriteria(initial_cities, method, 'community', straverage)" style="display: none;">
+                    Minimiser la somme globale des déplacements
+                </button>
+            </td></tr>
+            <tr><td>
+                <type="button" id="btn_individual" class="switch_button" onclick="switchCriteria(initial_cities, method, 'individual', straverage)" style="display: none;">
+                    Minimiser le trajet le plus long
+                </button>
+            </td></tr>
+        </table>
     </body>
 {% endblock %}
-

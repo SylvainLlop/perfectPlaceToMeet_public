@@ -91,6 +91,13 @@ function initMap(entities, weightings, initial_cities) {
         }
     }
 
+    // Get maps data on openstreetmap.fr
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+        attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
+        minZoom: 1,
+        maxZoom: 10
+    }).addTo(macarte);
+
     // Polygons
     for(var i = 0; i < entities.length; i++) {
         addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min);
@@ -100,10 +107,7 @@ function initMap(entities, weightings, initial_cities) {
     for(var i = 0; i < initial_cities.length; i++) {
         addMarkerToCard(macarte, initial_cities[i]["fields"]);
     }
-
-    return macarte;
 }
-
 
 function changeMap(entities, weightings, initial_cities) {  
     var weighting_min = 36000;
