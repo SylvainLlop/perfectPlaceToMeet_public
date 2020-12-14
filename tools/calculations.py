@@ -17,15 +17,17 @@ def calculate_distance(city_A, city_B):
     return distance
 
 
-def get_cities_weightings(departure_cities_dict, all_cities_list, method, criteria):
-    depts_weightings = []
+def get_cities_weightings(departure_cities_dict, all_cities_list, method):
+    depts_weightings_community = []
+    depts_weightings_individual = []
     nb_cities = sum([int(city['nb_people']) for city in departure_cities_dict])
 
     # Get tuples with unique departure cities and their occurences in departure_cities_list
     departure_cities_tuples = [(x['city'], int(x['nb_people'])) for x in departure_cities_dict]
 
     for city in all_cities_list:
-        city_weighting = 0
+        city_weighting_individual = 0
+        city_weighting_community = 0
         for dep_city_tuple in departure_cities_tuples:
             dep_city = dep_city_tuple[0]
             dep_city_occurence = dep_city_tuple[1]
@@ -41,17 +43,16 @@ def get_cities_weightings(departure_cities_dict, all_cities_list, method, criter
                 except:
                     print('Problème avec le trajet {} - {}'.format(dep_city.pref_name, city.name))
 
-                if criteria == 'community':
-                    city_weighting += journey_weighting * dep_city_occurence
-                elif criteria == 'individual':
-                    if journey_weighting > city_weighting:
-                        city_weighting = journey_weighting
+                city_weighting_community += journey_weighting * dep_city_occurence
+                if journey_weighting > city_weighting_individual:
+                    city_weighting_individual = journey_weighting
 
-        if criteria == 'community':
-            weighting = city_weighting / nb_cities
-        elif criteria == 'individual':
-            weighting = city_weighting
+        depts_weightings_community.append((city.num_department, city_weighting_community / nb_cities))
+        depts_weightings_individual.append((city.num_department, city_weighting_individual))
 
-        depts_weightings.append((city.num_department, weighting))
+    depts_weightings = {
+        'com' : depts_weightings_community,
+        'ind' : depts_weightings_individual
+    }
 
     return depts_weightings

@@ -11,12 +11,16 @@
         {% load static %}
         <script type="text/javascript" src="{% static 'find_pp2m/js/map_with_weights.js' %}"></script>
         <script type="text/javascript">
-            var entities = {{ all_entities | safe }};
-            var weightings = {{ weightings | safe }};
-            var nbpeople = {{ nb_people | safe }};
             var initial_cities = {{ initial_cities | safe }};
+            var nbpeople = {{ nb_people | safe }};
             var method = {{ method | safe }};
+            var criteria_ini = {{ criteria | safe }};
 
+            var entities_com = {{ all_entities_com | safe }};
+            var entities_ind = {{ all_entities_ind | safe }};
+            var weightings_com = {{ weightings_com | safe }};
+            var weightings_ind = {{ weightings_ind | safe }};
+            
             if (method == 'route_duration') {
                 var numformat = 2;
                 var strmethod = 'par temps en voiture';
@@ -36,44 +40,89 @@
             <p align="center">Résultats <script>document.write(strmethod)</script> :</p>
             <table id="TopResults" class="resultsTable" style="max-width:600px" align="center"></table>
         </div>
-        <script>
-            var wrapper = document.getElementById("TopResults");
-            var myHTML = '<thead>';
-            myHTML += '<td width="60%">Ville</td>';
-            myHTML += '<td width="20%">' + straverage + '</td>';
-            myHTML += '<td width="20%">Ecart</td>';
-            myHTML += '</thead>';
-            var i = 0;
-            do {
-                var composed_value = retrieveFormatedValue(weightings[i], method);
-                var plusvalue = 100 * (weightings[i] - weightings[0]) / weightings[0];
-                myHTML += '<tr>';
-                myHTML += '<td align="center">' + entities[i]["fields"]["name"] + '</td>';
-                myHTML += '<td align="center">' + composed_value + '</td>';
-                if (i == 0) {
-                    myHTML += '<td align="center">-</td>';
-                } else {
-                    myHTML += '<td align="center"> +' + plusvalue.toFixed(1) + '%</td>';
-                }
-                myHTML += '</tr>';
-                if (i == 9) {
-                    break;
-                }
-                i += 1;
-            } while (weightings[i] < weightings[0] * 1.15)
-            wrapper.innerHTML = myHTML;
+        <script type="text/javascript">
+            function writeTabResults(entities, weightings, method, straverage) {
+                var wrapper = document.getElementById("TopResults");
+                var myHTML = '<thead>';
+                myHTML += '<td width="60%">Ville</td>';
+                myHTML += '<td width="20%">' + straverage + '</td>';
+                myHTML += '<td width="20%">Ecart</td>';
+                myHTML += '</thead>';
+                var i = 0;
+                do {
+                    var composed_value = retrieveFormatedValue(weightings[i], method);
+                    var plusvalue = 100 * (weightings[i] - weightings[0]) / weightings[0];
+                    myHTML += '<tr>';
+                    myHTML += '<td align="center">' + entities[i]["fields"]["name"] + '</td>';
+                    myHTML += '<td align="center">' + composed_value + '</td>';
+                    if (i == 0) {
+                        myHTML += '<td align="center">-</td>';
+                    } else {
+                        myHTML += '<td align="center"> +' + plusvalue.toFixed(1) + '%</td>';
+                    }
+                    myHTML += '</tr>';
+                    if (i == 9) {
+                        break;
+                    }
+                    i += 1;
+                } while (weightings[i] < weightings[0] * 1.15)
+                wrapper.innerHTML = myHTML;
+            }
         </script>
 
         <div id="map">
-	        <!-- Map appears here -->
+        <script>
+            // Get prefecture coordinates
+            var pref_lat = 46.599;
+            var pref_lon = 2.4958;
+        
+            // Initialize map centered in Null Island
+            var macarte = L.map('map').setView([pref_lat, pref_lon], 5);
+            
+            // Get maps data on openstreetmap.fr
+            L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+                attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
+                minZoom: 1,
+                maxZoom: 10
+            }).addTo(macarte);
+        </script>
 	    </div>
         <script type="text/javascript" src="{% static 'find_pp2m/js/map_with_weights.js' %}"></script>
         <script type="text/javascript">
             // Initialisation function
             window.onload = function(){
-            initMap(macarte, entities, weightings, initial_cities);
+                if (criteria_ini == 'community') {
+                    var entities = entities_com;
+                    var weightings = weightings_com;
+                } else if (criteria_ini == 'individual') {
+                    var entities = entities_ind;
+                    var weightings = weightings_ind;
+                }
+            writeTabResults(entities, weightings, method, straverage);
+            var macarte = initMap(entities, weightings, initial_cities);
             }
         </script>
+
+        <script type="text/javascript">
+            function switchCriteria(initial_cities, entities, weightings, method, criteria, straverage) {
+                if (criteria == 'community') {
+                    criteria = 'individual';                    
+                } else if (criteria == 'individual') {
+                    criteria = 'community';
+                }
+                if (criteria == 'community') {
+                    var entities = entities_com;
+                    var weightings = weightings_com;
+                } else if (criteria == 'individual') {
+                    var entities = entities_ind;
+                    var weightings = weightings_ind;
+                }
+                writeTabResults(entities, weightings, method, straverage);
+                changeMap(entities, weightings, initial_cities);
+            }
+            
+        </script>
+
 
         <div id="InitialCitiesList" align="center"></div>
         <script>
@@ -86,7 +135,10 @@
             wrapper.innerHTML = myHTML;
         </script>
 
-
+        <table><tr>
+            <td><type="button" class="row_button" onclick="switchCriteria(initial_cities, entities_ind, weightings_ind, method, 'community', straverage)">Collectif</button></td>
+            <td><type="button" class="row_button" onclick="switchCriteria(initial_cities, entities_ind, weightings_ind, method, 'individual', straverage)">Individual</button></td>
+        </tr></table>
     </body>
 {% endblock %}
 
