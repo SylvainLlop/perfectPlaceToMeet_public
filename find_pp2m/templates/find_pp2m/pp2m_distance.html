@@ -20,8 +20,10 @@
 
             var entities_com = {{ all_entities_com | safe }};
             var entities_ind = {{ all_entities_ind | safe }};
+            var entities_mix = {{ all_entities_mix | safe }};
             var weightings_com = {{ weightings_com | safe }};
             var weightings_ind = {{ weightings_ind | safe }};
+            var weightings_mix = {{ weightings_mix | safe }};
             
             if (method == 'route_duration') {
                 var numformat = 2;
@@ -42,7 +44,7 @@
                 var strcriteria = 'minimiser le trajet le plus long';
             }
 
-            function writeTabResults(entities, weightings, method, straverage) {
+            function writeTabResults(entities, weightings, method, straverage, criteria) {
                 var wrapper = document.getElementById("TopResults");
                 var myHTML = '<thead>';
                 myHTML += '<td width="60%">Ville</td>';
@@ -51,7 +53,7 @@
                 myHTML += '</thead>';
                 var i = 0;
                 do {
-                    var composed_value = retrieveFormatedValue(weightings[i], method);
+                    var composed_value = retrieveFormatedValue(weightings[i], method, criteria);
                     var plusvalue = 100 * (weightings[i] - weightings[0]) / weightings[0];
                     myHTML += '<tr>';
                     myHTML += '<td align="center">' + entities[i]["fields"]["name"] + '</td>';
@@ -104,16 +106,25 @@
                     var weightings = weightings_com;
                     var straverage = 'Moyenne des trajets';
                     document.getElementById("btn_community").style.display = "none"
-                    document.getElementById("btn_individual").style.display = ""               
+                    document.getElementById("btn_individual").style.display = ""  
+                    document.getElementById("btn_mixed").style.display = ""             
                 } else if (criteria == 'individual') {
                     var entities = entities_ind;
                     var weightings = weightings_ind;
                     var straverage = 'Trajet le plus long';
                     document.getElementById("btn_community").style.display = ""
-                    document.getElementById("btn_individual").style.display = "none"
+                    document.getElementById("btn_individual").style.display = "none" 
+                    document.getElementById("btn_mixed").style.display = ""      
+                } else if (criteria == 'mixed') {
+                    var entities = entities_mix;
+                    var weightings = weightings_mix;
+                    var straverage = 'Valeur calculée';
+                    document.getElementById("btn_community").style.display = ""
+                    document.getElementById("btn_individual").style.display = "" 
+                    document.getElementById("btn_mixed").style.display = "none"      
                 }
-                writeTabResults(entities, weightings, method, straverage);
-                initMap(entities, weightings, initial_cities, method);
+                writeTabResults(entities, weightings, method, straverage, criteria);
+                initMap(entities, weightings, initial_cities, method, criteria);
                 writeParameters(initial_cities, nb_people, strmethod, criteria);
             }
 
@@ -140,6 +151,8 @@
                     var strcriteria = 'minimiser la somme globale des déplacements';
                 } else if (criteria == 'individual') {
                     var strcriteria = 'minimiser le trajet le plus long';
+                } else if (criteria == 'mixed') {
+                    var strcriteria = 'critère mixte';
                 }
                 // Titre
                 var myHTML = '<p><b>Rappel des paramètres de calcul</b></p>';
@@ -159,19 +172,26 @@
         </script>
 
         <table align="center">
-            <tr><td align="center">
+            <tr><td align="center" colspan="2">
                 Modifier le critère d'optimisation:
             </td></tr>
-            <tr id="btn_community" style="display: none;"><td>
-                <type="button"  class="switch_button" onclick="switchCriteria(initial_cities, nbpeople, method, 'community', straverage, strmethod)">
-                    Voir en minimisant la somme globale des déplacements
-                </button>
-            </td></tr>
-            <tr id="btn_individual" style="display: none;"><td>
-                <type="button" class="switch_button" onclick="switchCriteria(initial_cities, nbpeople, method, 'individual', straverage, strmethod)" >
-                    Voir en minimisant le trajet le plus long
-                </button>
-            </td></tr>
+            <tr>
+                <td id="btn_mixed" style="display: none;">
+                    <type="button" class="switch_button" onclick="switchCriteria(initial_cities, nbpeople, method, 'mixed', straverage, strmethod)" >
+                        Voir avec le critère mixte
+                    </button>
+                </td>
+                <td id="btn_community" style="display: none;">
+                    <type="button"  class="switch_button" onclick="switchCriteria(initial_cities, nbpeople, method, 'community', straverage, strmethod)">
+                        Voir en minimisant la somme globale des déplacements
+                    </button>
+                </td>
+                <td id="btn_individual" style="display: none;">
+                    <type="button" class="switch_button" onclick="switchCriteria(initial_cities, nbpeople, method, 'individual', straverage, strmethod)" >
+                        Voir en minimisant le trajet le plus long
+                    </button>
+                </td>
+            </tr>
         </table>
     </body>
 {% endblock %}

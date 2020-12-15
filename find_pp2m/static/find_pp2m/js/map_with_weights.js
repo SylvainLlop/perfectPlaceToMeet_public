@@ -25,14 +25,14 @@ function getHexaColorFromWeighting(value, value_min) {
     return hexacolor = rgbToHex(255, valcolor, valcolor);
 }
 
-function addPolygonToCard(macarte, coords, value, value_min, method) {
+function addPolygonToCard(macarte, coords, value, value_min, method, criteria) {
     var markerOptions = {opacity: 1};
     var hexacolor = getHexaColorFromWeighting(value, value_min);
     markerOptions.color = hexacolor;
 
     var poly_latlon = JSON.parse(coords["polygon"]);
     var polygon = L.polygon(poly_latlon, {color: hexacolor, stroke: false, fill: true, fillOpacity: 0.7}).addTo(macarte);
-    let popup_str = composeValue(coords["name"], value, method)
+    let popup_str = composeValue(coords["name"], value, method, criteria)
     var popup = polygon.bindPopup(popup_str);  //
 }
 
@@ -43,16 +43,18 @@ function addMarkerToCard(macarte, initial_city) {
 }
 
 // Fonction pour retourner le chiffre en fonction de la méthode
-function composeValue(entity, weighting, method) {
-    var value = retrieveFormatedValue(weighting, method)
+function composeValue(entity, weighting, method, criteria) {
+    var value = retrieveFormatedValue(weighting, method, criteria)
 
     var composed_value = entity + ' (' + value + ')';
 
     return composed_value;
 }
 
-function retrieveFormatedValue(weighting, method) {
-    if (method == 'route_duration') {
+function retrieveFormatedValue(weighting, method, criteria) {
+    if (criteria == 'mixed') {
+        var value = weighting.toFixed(2);
+    } else if (method == 'route_duration') {
         if (weighting < 1) {
             var str_mins = (weighting*60).toFixed(0);
             var value = str_mins + ' min';
@@ -78,7 +80,7 @@ function retrieveFormatedValue(weighting, method) {
 }
 
 // Fonction d'initialisation de la carte
-function initMap(entities, weightings, initial_cities, method) {  
+function initMap(entities, weightings, initial_cities, method, criteria) {  
     var weighting_min = 36000;
     var weighting_max = 0;
     var best_pick = '';
@@ -101,7 +103,7 @@ function initMap(entities, weightings, initial_cities, method) {
 
     // Polygons
     for(var i = 0; i < entities.length; i++) {
-        addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min, method);
+        addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min, method, criteria);
     }
 
     // Markers

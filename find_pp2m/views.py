@@ -71,6 +71,8 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
         weightings[criteria] = top_cities_weightings_values[criteria] + bot_depts_weightings_values[criteria]
         weightings[criteria], entities_combined[criteria] = (list(t) for t in zip(*sorted(zip(weightings[criteria], entities_combined_list), key=lambda x: x[0])))
 
+    (entities_combined, weightings) = calculate_mixed_criteria(entities_combined, weightings)
+
     # Convert in JSON
     dep_cities_list = [x['city'] for x in dep_cities_dict]
     dep_cities_nbpeople = [x['nb_people'] for x in dep_cities_dict]
@@ -81,9 +83,11 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
 
     all_entities_com_json = serializers.serialize('json', entities_combined['com'], fields=('name', 'polygon'))
     all_entities_ind_json = serializers.serialize('json', entities_combined['ind'], fields=('name', 'polygon'))
+    all_entities_mix_json = serializers.serialize('json', entities_combined['mix'], fields=('name', 'polygon'))
 
     weightings_com_json = json.dumps(weightings['com'])
     weightings_ind_json = json.dumps(weightings['ind'])
+    weightings_mix_json = json.dumps(weightings['mix'])
 
     return render(request, 'find_pp2m/pp2m_distance.html', {
         'initial_cities': cities_json,
@@ -92,8 +96,10 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
         'criteria': criteria_json,
         'all_entities_com': all_entities_com_json,
         'all_entities_ind': all_entities_ind_json,
+        'all_entities_mix': all_entities_mix_json,
         'weightings_com': weightings_com_json,
-        'weightings_ind': weightings_ind_json
+        'weightings_ind': weightings_ind_json,
+        'weightings_mix': weightings_mix_json
     })
 
 

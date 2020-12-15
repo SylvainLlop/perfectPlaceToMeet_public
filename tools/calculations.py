@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from find_pp2m.models import Journey
 
 
@@ -56,3 +57,24 @@ def get_cities_weightings(departure_cities_dict, all_cities_list, method):
     }
 
     return depts_weightings
+
+
+def calculate_mixed_criteria(entities, weightings):
+    entities_weightings = {}
+    std_wgs = {}
+
+    for criteria in entities:
+        entities_weightings[criteria] = zip(entities[criteria], weightings[criteria])
+        entities_weightings[criteria] = sorted(entities_weightings[criteria], key=lambda weight: weight[0].name)
+        std_wgs[criteria] = np.array([x[1] for x in entities_weightings[criteria]])
+        std_wgs[criteria] = (std_wgs[criteria] - min(std_wgs[criteria])) / (max(std_wgs[criteria]) - min(std_wgs[criteria]))   
+    
+    entities_list = [x[0] for x in entities_weightings['com']]
+    std_wgs['mix'] = np.array(std_wgs['com']) + np.array(std_wgs['ind'])
+    std_wgs['mix'] = std_wgs['mix'] - min(std_wgs['mix']) + 1
+    entities_weightings['mix'] = sorted(zip(entities_list, list(std_wgs['mix'])), key=lambda weight: weight[1])
+
+    entities['mix'] = [x[0] for x in entities_weightings['mix']]
+    weightings['mix'] = [x[1] for x in entities_weightings['mix']]
+
+    return (entities, weightings)
