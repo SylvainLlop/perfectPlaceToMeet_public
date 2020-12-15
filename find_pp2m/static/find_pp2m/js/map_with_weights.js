@@ -69,7 +69,7 @@ function retrieveFormatedValue(weighting, method) {
         }
     } else if (method == 'route_distance') {
         var value = weighting.toFixed(1) + ' km';
-    } else if (method == 'route_distance') {
+    } else if (method == 'raw_distance') {
         var value = weighting.toFixed(1) + ' km';
     }
 
