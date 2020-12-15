@@ -25,14 +25,15 @@ function getHexaColorFromWeighting(value, value_min) {
     return hexacolor = rgbToHex(255, valcolor, valcolor);
 }
 
-function addPolygonToCard(macarte, coords, value, value_min) {
+function addPolygonToCard(macarte, coords, value, value_min, method) {
     var markerOptions = {opacity: 1};
     var hexacolor = getHexaColorFromWeighting(value, value_min);
     markerOptions.color = hexacolor;
 
     var poly_latlon = JSON.parse(coords["polygon"]);
     var polygon = L.polygon(poly_latlon, {color: hexacolor, stroke: false, fill: true, fillOpacity: 0.7}).addTo(macarte);
-    var popup = polygon.bindPopup(coords["name"].concat(" (", value.toFixed(2), ")"));  //
+    let popup_str = composeValue(coords["name"], value, method)
+    var popup = polygon.bindPopup(popup_str);  //
 }
 
 // Marker function
@@ -77,7 +78,7 @@ function retrieveFormatedValue(weighting, method) {
 }
 
 // Fonction d'initialisation de la carte
-function initMap(entities, weightings, initial_cities) {  
+function initMap(entities, weightings, initial_cities, method) {  
     var weighting_min = 36000;
     var weighting_max = 0;
     var best_pick = '';
@@ -100,43 +101,7 @@ function initMap(entities, weightings, initial_cities) {
 
     // Polygons
     for(var i = 0; i < entities.length; i++) {
-        addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min);
-    }
-
-    // Markers
-    for(var i = 0; i < initial_cities.length; i++) {
-        addMarkerToCard(macarte, initial_cities[i]["fields"]);
-    }
-}
-
-function changeMap(entities, weightings, initial_cities) {  
-    var weighting_min = 36000;
-    var weighting_max = 0;
-    var best_pick = '';
-    for(var i = 0; i < weightings.length; i++) {
-        if (weightings[i] < weighting_min) {
-            weighting_min = weightings[i]
-            best_pick = entities[i]["fields"]["name"]
-        }
-        if (weightings[i] > weighting_max) {
-            weighting_max = weightings[i]
-        }
-    }
-
-    macarte.eachLayer(function (layer) {
-        macarte.removeLayer(layer);
-    });
-
-    // Get maps data on openstreetmap.fr
-    L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-        attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
-        minZoom: 1,
-        maxZoom: 10
-    }).addTo(macarte);
-
-    // Polygons
-    for(var i = 0; i < entities.length; i++) {
-        addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min);
+        addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min, method);
     }
 
     // Markers
