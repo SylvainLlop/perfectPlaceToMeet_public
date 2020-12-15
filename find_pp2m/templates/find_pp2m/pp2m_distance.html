@@ -35,10 +35,10 @@
             }
 
             if (criteria_ini == 'community') {
-                var straverage = 'Moyenne';
+                var straverage = 'Moyenne des trajets';
                 var strcriteria = 'minimiser la somme globale des déplacements';
             } else if (criteria_ini == 'individual') {
-                var straverage = 'Valeur la plus grande';
+                var straverage = 'Trajet le plus long';
                 var strcriteria = 'minimiser le trajet le plus long';
             }
 
@@ -102,13 +102,13 @@
                 if (criteria == 'community') {
                     var entities = entities_com;
                     var weightings = weightings_com;
-                    var straverage = 'Moyenne';
+                    var straverage = 'Moyenne des trajets';
                     document.getElementById("btn_community").style.display = "none"
                     document.getElementById("btn_individual").style.display = ""               
                 } else if (criteria == 'individual') {
                     var entities = entities_ind;
                     var weightings = weightings_ind;
-                    var straverage = 'Valeur la plus grande';
+                    var straverage = 'Trajet le plus long';
                     document.getElementById("btn_community").style.display = ""
                     document.getElementById("btn_individual").style.display = "none"
                 }
