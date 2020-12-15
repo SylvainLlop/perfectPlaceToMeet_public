@@ -194,8 +194,8 @@ input:active {
   padding: 5px 15px;
   font-size: 12px;
   display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 10px;
+  margin-right: 10px;
   margin-top: 10px;
 }
 
