@@ -134,6 +134,7 @@ class CityAutocomplete(autocomplete.Select2QuerySetView):
             self.q = re.sub('[oôöÒÓÔÕÖ]', 'o', self.q)
             self.q = re.sub('[uüûùUÜÛÙÚ]', 'u', self.q)
             self.q = re.sub('[yYÿÝ]', 'y', self.q)
+            self.q = self.q.replace(' ', '-')
             self.q = self.q.lower()
             qs = qs.filter(slug__istartswith=self.q)
 
