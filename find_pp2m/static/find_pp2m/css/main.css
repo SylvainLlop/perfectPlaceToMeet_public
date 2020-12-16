@@ -53,6 +53,16 @@ input {
   width: 1px;
 }
 
+input[type=number] {
+  width: 90%;
+  height: 25px;
+  margin: 2px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 input[type=text], select {
   width: 90%;
   height: 25px;
@@ -94,13 +104,14 @@ input:active {
 }
 
 #box {
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: auto;
+    margin-right: auto;
     padding: 10px;
     margin-top: 20px;
     margin-bottom: 20px;
     background: #f5e3de;
     border: 1px solid #add8e6;
+    max-width: 800px;
 }
 
 .formbox {
@@ -176,6 +187,18 @@ input:active {
   margin-top: 20px;
 }
 
+.switch_button {
+  background-color: #e3b1a3;
+  border: none;
+  color: #191970;
+  padding: 5px 15px;
+  font-size: 12px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
 #map{
   height:400px;
   width:510px;
@@ -192,6 +215,37 @@ input:active {
 
 .select2{
   width: 1px;
+}
+
+.inside-box {
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background: #f5e3de;
+  border: 1px solid #add8e6;
+}
+
+table.resultsTable {
+  border: 2px solid #F5E3DE;
+  width: 50%;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.resultsTable tr {
+  border: 1px solid #ADD8E6;
+  padding: 3px 3px;
+}
+table.resultsTable thead {
+    border-bottom: 3px solid #ADD8E6;
+}
+table.resultsTable thead th {
+  font-weight: bold;
+  text-align: center;
+}
+table.resultsTable tfoot td {
+  font-size: 14px;
 }
 
 /* 

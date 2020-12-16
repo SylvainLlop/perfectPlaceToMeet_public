@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from find_pp2m.models import Journey
 
 
@@ -17,15 +18,17 @@ def calculate_distance(city_A, city_B):
     return distance
 
 
-def get_cities_weightings(departure_cities_dict, all_cities_list, method, criteria):
-    depts_weightings = []
-    nb_cities = len(departure_cities_dict)
+def get_cities_weightings(departure_cities_dict, all_cities_list, method):
+    depts_weightings_community = []
+    depts_weightings_individual = []
+    nb_cities = sum([int(city['nb_people']) for city in departure_cities_dict])
 
     # Get tuples with unique departure cities and their occurences in departure_cities_list
     departure_cities_tuples = [(x['city'], int(x['nb_people'])) for x in departure_cities_dict]
 
     for city in all_cities_list:
-        city_weighting = 0
+        city_weighting_individual = 0
+        city_weighting_community = 0
         for dep_city_tuple in departure_cities_tuples:
             dep_city = dep_city_tuple[0]
             dep_city_occurence = dep_city_tuple[1]
@@ -35,23 +38,43 @@ def get_cities_weightings(departure_cities_dict, all_cities_list, method, criter
                     if method == 'raw_distance':
                         journey_weighting = calculate_distance(dep_city, city)
                     elif method == 'route_distance':
-                        journey_weighting = Journey.objects.get(departure=dep_city.name, arrival=city.name).distance / 1000
+                        journey_weighting = Journey.objects.get(departure=dep_city.pref_name, arrival=city.name).distance / 1000
                     elif method == 'route_duration':
-                        journey_weighting = Journey.objects.get(departure=dep_city.name, arrival=city.name).duration / 3600
+                        journey_weighting = Journey.objects.get(departure=dep_city.pref_name, arrival=city.name).duration / 3600
                 except:
-                    print('Problème avec le trajet {} - {}'.format(dep_city.name, city.name))
+                    print('Problème avec le trajet {} - {}'.format(dep_city.pref_name, city.name))
 
-                if criteria == 'community':
-                    city_weighting += journey_weighting * dep_city_occurence
-                elif criteria == 'individual':
-                    if journey_weighting > city_weighting:
-                        city_weighting = journey_weighting
+                city_weighting_community += journey_weighting * dep_city_occurence
+                if journey_weighting > city_weighting_individual:
+                    city_weighting_individual = journey_weighting
 
-        if criteria == 'community':
-            weighting = city_weighting / nb_cities
-        elif criteria == 'individual':
-            weighting = city_weighting
+        depts_weightings_community.append((city.num_department, city_weighting_community / nb_cities))
+        depts_weightings_individual.append((city.num_department, city_weighting_individual))
 
-        depts_weightings.append((city.num_department, weighting))
+    depts_weightings = {
+        'com' : depts_weightings_community,
+        'ind' : depts_weightings_individual
+    }
 
     return depts_weightings
+
+
+def calculate_mixed_criteria(entities, weightings):
+    entities_weightings = {}
+    std_wgs = {}
+
+    for criteria in entities:
+        entities_weightings[criteria] = zip(entities[criteria], weightings[criteria])
+        entities_weightings[criteria] = sorted(entities_weightings[criteria], key=lambda weight: weight[0].name)
+        std_wgs[criteria] = np.array([x[1] for x in entities_weightings[criteria]])
+        std_wgs[criteria] = (std_wgs[criteria] - min(std_wgs[criteria])) / (max(std_wgs[criteria]) - min(std_wgs[criteria]))   
+    
+    entities_list = [x[0] for x in entities_weightings['com']]
+    std_wgs['mix'] = np.array(std_wgs['com']) + np.array(std_wgs['ind'])
+    std_wgs['mix'] = std_wgs['mix'] - min(std_wgs['mix']) + 1
+    entities_weightings['mix'] = sorted(zip(entities_list, list(std_wgs['mix'])), key=lambda weight: weight[1])
+
+    entities['mix'] = [x[0] for x in entities_weightings['mix']]
+    weightings['mix'] = [x[1] for x in entities_weightings['mix']]
+
+    return (entities, weightings)
