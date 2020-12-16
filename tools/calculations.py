@@ -1,6 +1,8 @@
 import math
 import numpy as np
-from find_pp2m.models import Journey
+import pandas as pd
+from django.db.models import Q
+from find_pp2m.models import City, Journey
 
 
 def calculate_distance(city_A, city_B):
@@ -18,7 +20,7 @@ def calculate_distance(city_A, city_B):
     return distance
 
 
-def get_cities_weightings(departure_cities_dict, all_cities_list, method):
+def get_cities_weightings_old(departure_cities_dict, all_cities_list, method):
     depts_weightings_community = []
     depts_weightings_individual = []
     nb_cities = sum([int(city['nb_people']) for city in departure_cities_dict])
@@ -57,6 +59,71 @@ def get_cities_weightings(departure_cities_dict, all_cities_list, method):
     }
 
     return depts_weightings
+
+
+def get_cities_weightings_new(departure_cities_dict, method):
+    nb_cities = sum([int(city['nb_people']) for city in departure_cities_dict])
+
+    arr_cities_weightings = {}
+
+    dep_cities_list = [x['city'].name for x in departure_cities_dict]
+
+    db_method = method.replace('route_', '')
+    columns_list = ['departure', 'arrival', db_method]
+    dep_cities_df = pd.DataFrame.from_records(
+        Journey.objects.filter(departure__in=dep_cities_list).values_list('departure', 'arrival', db_method), 
+        columns=columns_list
+    )
+
+    com_df = pd.DataFrame(dep_cities_df.groupby('arrival').sum()[db_method])
+    ind_df = pd.DataFrame(dep_cities_df.groupby('arrival').max()[db_method])
+
+    com_df = com_df.sort_values(db_method)
+    ind_df = ind_df.sort_values(db_method)
+
+    arr_cities_list = list(dep_cities_df.arrival.unique())
+    print(arr_cities_list)
+    arr_cities_df = pd.DataFrame.from_records(
+        City.objects.filter(Q(is_pref=True) | Q(is_sous_pref=True)).values_list('name', 'polygon'), 
+        columns=['name', 'polygon']
+    )
+
+    com_df = pd.merge(com_df, arr_cities_df, left_on='arrival', right_on='name')
+
+    print(com_df)
+    print(ind_df)
+    print(arr_cities_df)
+
+
+    # for dep_city_tuple in departure_cities_tuples:
+    #     dep_city = dep_city_tuple[0]
+    #     dep_city_occurence = dep_city_tuple[1]
+# 
+    #     dep_city_journeys = Journey.objects.filter(departure=dep_city)
+# 
+    #     for dep_city_journey in dep_city_journeys:
+    #         arr_city = dep_city_journey.arrival
+    #         if method == 'raw_distance':
+    #             journey_weighting = calculate_distance(dep_city, city)
+    #         elif method == 'route_distance':
+    #             journey_weighting = dep_city_journey.distance / 1000
+    #         elif method == 'route_duration':
+    #             journey_weighting = dep_city_journey.duration / 3600
+# 
+    #         if arr_cities in arr_cities_weightings_com:
+    #             arr_cities_weightings_com[arr_cities] += journey_weighting
+    #             if journey_weighting < arr_cities_weightings_in[arr_cities]:
+    #                 arr_cities_weightings_in[arr_cities] = journey_weighting
+    #         else:
+    #             arr_cities_weightings_com[arr_cities] = journey_weighting
+    #             arr_cities_weightings_in[arr_cities] = journey_weighting
+# 
+    # cities_weightings = {
+    #     'com' : arr_cities_weightings_com,
+    #     'ind' : arr_cities_weightings_in
+    # }
+# 
+    # return cities_weightings
 
 
 def calculate_mixed_criteria(entities, weightings):

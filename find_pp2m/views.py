@@ -32,9 +32,11 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
     entities_combined = {}
     weightings = {}
 
+    get_cities_weightings_new(dep_cities_dict, method)
+
     # Calculate weight for each department
     all_prefs = City.objects.filter(is_pref='True')
-    depts_weightings = get_cities_weightings(dep_cities_dict, all_prefs, method)
+    depts_weightings = get_cities_weightings_old(dep_cities_dict, all_prefs, method)
 
     # Separate top and bottom weights
     for criteria in depts_weightings:
@@ -58,7 +60,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
     top_cities = City.objects.filter(num_department__in=top_depts_list).filter(Q(is_pref=True) | Q(is_sous_pref=True))
 
     # Calculate weight for top cities
-    top_cities_weightings = get_cities_weightings(dep_cities_dict, top_cities, method)
+    top_cities_weightings = get_cities_weightings_old(dep_cities_dict, top_cities, method)
 
     # Isolate weightings from results
     for criteria in depts_weightings:
@@ -101,6 +103,16 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
         'weightings_ind': weightings_ind_json,
         'weightings_mix': weightings_mix_json
     })
+
+
+def pp2m_search_new(request, dep_cities_dict, method, criteria_ini):
+    keep_top = 7
+
+    cities_weightings = get_cities_weightings(dep_cities_dict, method)
+
+
+
+
 
 
 def pp2m_form(request):
