@@ -14,13 +14,8 @@ coreschema==0.0.4
 cycler==0.10.0
 Cython==0.29.14
 dj-database-url==0.5.0
-<<<<<<< HEAD
-Django==3.0.3
-django-autocomplete-light==3.8.1
-=======
-django-autocomplete-light==3.8.1
 Django==3.0.7
->>>>>>> c0c2683c3a34725490b63ee20d9098faffaf2798
+django-autocomplete-light==3.8.1
 django-bootstrap-form==3.4
 django-debug-toolbar==2.2
 django-filter==2.2.0
