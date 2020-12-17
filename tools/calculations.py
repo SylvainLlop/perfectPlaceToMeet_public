@@ -1,6 +1,8 @@
 import math
 import numpy as np
-from find_pp2m.models import Journey
+import pandas as pd
+from django.db.models import Q
+from find_pp2m.models import City, Journey
 
 
 def calculate_distance(city_A, city_B):
@@ -18,7 +20,7 @@ def calculate_distance(city_A, city_B):
     return distance
 
 
-def get_cities_weightings(departure_cities_dict, all_cities_list, method):
+def get_cities_weightings_old(departure_cities_dict, all_cities_list, method):
     depts_weightings_community = []
     depts_weightings_individual = []
     nb_cities = sum([int(city['nb_people']) for city in departure_cities_dict])
@@ -58,6 +60,68 @@ def get_cities_weightings(departure_cities_dict, all_cities_list, method):
 
     return depts_weightings
 
+
+def get_cities_weightings(departure_cities_dict, method, mixed_criteria=True):
+    
+    nb_cities = sum([int(city['nb_people']) for city in departure_cities_dict])
+    dep_cities_list = [x['city'].name for x in departure_cities_dict]
+
+    # Get raw values for major cities
+    db_method = method.replace('route_', '')
+    columns_list = ['departure', 'arrival', 'value']
+    dep_cities_df = pd.DataFrame.from_records(
+        Journey.objects.filter(departure__in=dep_cities_list).values_list('departure', 'arrival', db_method), 
+        columns=columns_list
+    )
+
+    # Convert distance and duration in kms and hours
+    if db_method == 'distance':
+        dep_cities_df['value'] = dep_cities_df['value'] / 1000
+    elif db_method == 'duration':
+        dep_cities_df['value'] = dep_cities_df['value'] / 3600
+
+    # Ponderate community city with nb of people
+    dep_cities_com_df = dep_cities_df.copy()
+    for dep_city in departure_cities_dict:
+        city = dep_city['city'].name
+        nb_people = dep_city['nb_people']
+        dep_cities_com_df.loc[dep_cities_com_df['departure'] == city, 'value'] = dep_cities_com_df.loc[dep_cities_com_df['departure'] == city, 'value'] * nb_people
+
+    # Generate dataframes on aggregating values
+    com_df = pd.DataFrame(dep_cities_com_df.groupby('arrival').sum()['value'])
+    com_df['value'] = com_df['value'] / nb_cities
+    ind_df = pd.DataFrame(dep_cities_df.groupby('arrival').max()['value'])
+
+    # Calculate mixed criteria
+    if mixed_criteria:
+        mix_df = pd.DataFrame((com_df['value'] - com_df['value'].min()) / (com_df['value'].max() - com_df['value'].min())) 
+        mix_df = mix_df.append(pd.DataFrame((ind_df['value'] - ind_df['value'].min()) / (ind_df['value'].max() - ind_df['value'].min())))
+        mix_df = pd.DataFrame(mix_df.groupby('arrival').sum()['value'])
+        mix_df['value'] = mix_df['value'] - mix_df['value'].min() + 1
+
+    # Sort values
+    com_df = com_df.sort_values('value')
+    ind_df = ind_df.sort_values('value')
+    mix_df = mix_df.sort_values('value')
+
+    # Get polygons and left join on dataframes
+    arr_cities_df = pd.DataFrame.from_records(
+        City.objects.filter(Q(is_pref=True) | Q(is_sous_pref=True)).values_list('name', 'polygon'), 
+        columns=['name', 'polygon']
+    )
+
+    com_df = pd.merge(com_df, arr_cities_df, left_on='arrival', right_on='name')
+    ind_df = pd.merge(ind_df, arr_cities_df, left_on='arrival', right_on='name')
+    mix_df = pd.merge(mix_df, arr_cities_df, left_on='arrival', right_on='name')
+
+    # Return dataframes as dictionnary
+    df_dict = {
+        'com': com_df,
+        'ind': ind_df,
+        'mix': mix_df
+    }
+
+    return df_dict
 
 def calculate_mixed_criteria(entities, weightings):
     entities_weightings = {}

@@ -21,7 +21,7 @@ def index(request):
     return HttpResponse(response)
 
 
-def pp2m_search(request, dep_cities_dict, method, criteria_ini):
+def pp2m_search_old(request, dep_cities_dict, method, criteria_ini):
     keep_top = 7
 
     top_depts = {}
@@ -32,9 +32,11 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
     entities_combined = {}
     weightings = {}
 
+    # get_cities_weightings_new(dep_cities_dict, method)
+
     # Calculate weight for each department
     all_prefs = City.objects.filter(is_pref='True')
-    depts_weightings = get_cities_weightings(dep_cities_dict, all_prefs, method)
+    depts_weightings = get_cities_weightings_old(dep_cities_dict, all_prefs, method)
 
     # Separate top and bottom weights
     for criteria in depts_weightings:
@@ -58,7 +60,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
     top_cities = City.objects.filter(num_department__in=top_depts_list).filter(Q(is_pref=True) | Q(is_sous_pref=True))
 
     # Calculate weight for top cities
-    top_cities_weightings = get_cities_weightings(dep_cities_dict, top_cities, method)
+    top_cities_weightings = get_cities_weightings_old(dep_cities_dict, top_cities, method)
 
     # Isolate weightings from results
     for criteria in depts_weightings:
@@ -89,6 +91,8 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
     weightings_ind_json = json.dumps(weightings['ind'])
     weightings_mix_json = json.dumps(weightings['mix'])
 
+    pp2m_search_new(request, dep_cities_dict, method, criteria)
+
     return render(request, 'find_pp2m/pp2m_distance.html', {
         'initial_cities': cities_json,
         'nb_people': nbpeople_json,
@@ -102,6 +106,36 @@ def pp2m_search(request, dep_cities_dict, method, criteria_ini):
         'weightings_mix': weightings_mix_json
     })
 
+
+def pp2m_search(request, dep_cities_dict, method, criteria):
+
+    # Get weightings
+    df_dict = get_cities_weightings(dep_cities_dict, method)
+
+    # Convert in JSON
+    dep_cities_list = [x['city'] for x in dep_cities_dict]
+    dep_cities_nbpeople = [x['nb_people'] for x in dep_cities_dict]
+    cities_json = serializers.serialize('json', dep_cities_list, fields=('name', 'latitude', 'longitude'))
+    nbpeople_json = json.dumps(dep_cities_nbpeople)
+    method_json = json.dumps(method)
+    criteria_json = json.dumps(criteria)
+
+    results_json = {}
+    for crit in df_dict:
+        result = df_dict[crit].to_json(orient="records")
+        parsed = json.loads(result)
+        results_json[crit] = json.dumps(parsed)
+
+    # Render
+    return render(request, 'find_pp2m/pp2m_distance.html', {
+        'initial_cities': cities_json,
+        'nb_people': nbpeople_json,
+        'method': method_json,
+        'criteria': criteria_json,
+        'results_com': results_json['com'],
+        'results_ind': results_json['ind'],
+        'results_mix': results_json['mix']
+    })
 
 def pp2m_form(request):
     JourneyFormSet = formset_factory(JourneyForm, extra=3, can_delete=True)

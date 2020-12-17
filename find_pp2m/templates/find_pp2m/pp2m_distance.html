@@ -18,12 +18,9 @@
             var method = {{ method | safe }};
             var criteria_ini = {{ criteria | safe }};
 
-            var entities_com = {{ all_entities_com | safe }};
-            var entities_ind = {{ all_entities_ind | safe }};
-            var entities_mix = {{ all_entities_mix | safe }};
-            var weightings_com = {{ weightings_com | safe }};
-            var weightings_ind = {{ weightings_ind | safe }};
-            var weightings_mix = {{ weightings_mix | safe }};
+            var results_com = {{ results_com | safe }};
+            var results_ind = {{ results_ind | safe }};
+            var results_mix = {{ results_mix | safe }};
             
             if (method == 'route_duration') {
                 var numformat = 2;
@@ -44,7 +41,7 @@
                 var strcriteria = 'minimiser le trajet le plus long';
             }
 
-            function writeTabResults(entities, weightings, method, straverage, criteria) {
+            function writeTabResults(results, method, straverage, criteria) {
                 var wrapper = document.getElementById("TopResults");
                 var myHTML = '<thead>';
                 myHTML += '<td width="60%">Ville</td>';
@@ -53,10 +50,10 @@
                 myHTML += '</thead>';
                 var i = 0;
                 do {
-                    var composed_value = retrieveFormatedValue(weightings[i], method, criteria);
-                    var plusvalue = 100 * (weightings[i] - weightings[0]) / weightings[0];
+                    var composed_value = retrieveFormatedValue(results[i]["value"], method, criteria);
+                    var plusvalue = 100 * (results[i]["value"] - results[0]["value"]) / results[0]["value"];
                     myHTML += '<tr>';
-                    myHTML += '<td align="center">' + entities[i]["fields"]["name"] + '</td>';
+                    myHTML += '<td align="center">' + results[i]["name"] + '</td>';
                     myHTML += '<td align="center">' + composed_value + '</td>';
                     if (i == 0) {
                         myHTML += '<td align="center">-</td>';
@@ -68,7 +65,7 @@
                         break;
                     }
                     i += 1;
-                } while (weightings[i] < weightings[0] * 1.15)
+                } while (results[i]["value"] < results[0]["value"] * 1.15)
                 wrapper.innerHTML = myHTML;
             }
         </script>
@@ -102,29 +99,26 @@
             
             function loadData(initial_cities, nb_people, method, criteria, straverage, strmethod) {
                 if (criteria == 'community') {
-                    var entities = entities_com;
-                    var weightings = weightings_com;
+                    var results = results_com;
                     var straverage = 'Moyenne des trajets';
                     document.getElementById("btn_community").style.display = "none"
                     document.getElementById("btn_individual").style.display = ""  
                     document.getElementById("btn_mixed").style.display = ""             
                 } else if (criteria == 'individual') {
-                    var entities = entities_ind;
-                    var weightings = weightings_ind;
+                    var results = results_ind;
                     var straverage = 'Trajet le plus long';
                     document.getElementById("btn_community").style.display = ""
                     document.getElementById("btn_individual").style.display = "none" 
                     document.getElementById("btn_mixed").style.display = ""      
                 } else if (criteria == 'mixed') {
-                    var entities = entities_mix;
-                    var weightings = weightings_mix;
+                    var results = results_mix;
                     var straverage = 'Valeur calculée';
                     document.getElementById("btn_community").style.display = ""
                     document.getElementById("btn_individual").style.display = "" 
                     document.getElementById("btn_mixed").style.display = "none"      
                 }
-                writeTabResults(entities, weightings, method, straverage, criteria);
-                initMap(entities, weightings, initial_cities, method, criteria);
+                writeTabResults(results, method, straverage, criteria);
+                initMap(results, initial_cities, method, criteria);
                 writeParameters(initial_cities, nb_people, strmethod, criteria);
             }
 
