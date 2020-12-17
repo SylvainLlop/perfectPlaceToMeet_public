@@ -125,7 +125,6 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
         result = df_dict[crit].to_json(orient="records")
         parsed = json.loads(result)
         results_json[crit] = json.dumps(parsed)
-        print(results_json[crit])
 
     # Render
     return render(request, 'find_pp2m/pp2m_distance.html', {
