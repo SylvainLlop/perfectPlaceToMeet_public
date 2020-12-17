@@ -25,14 +25,14 @@ function getHexaColorFromWeighting(value, value_min) {
     return hexacolor = rgbToHex(255, valcolor, valcolor);
 }
 
-function addPolygonToCard(macarte, coords, value, value_min, method, criteria) {
+function addPolygonToCard(macarte, result, value_min, method, criteria) {
     var markerOptions = {opacity: 1};
-    var hexacolor = getHexaColorFromWeighting(value, value_min);
+    var hexacolor = getHexaColorFromWeighting(result["value"], value_min);
     markerOptions.color = hexacolor;
 
-    var poly_latlon = JSON.parse(coords["polygon"]);
+    var poly_latlon = JSON.parse(result["polygon"]);
     var polygon = L.polygon(poly_latlon, {color: hexacolor, stroke: false, fill: true, fillOpacity: 0.7}).addTo(macarte);
-    let popup_str = composeValue(coords["name"], value, method, criteria)
+    let popup_str = composeValue(result["name"], result["value"], method, criteria)
     var popup = polygon.bindPopup(popup_str);  //
 }
 
@@ -80,17 +80,17 @@ function retrieveFormatedValue(weighting, method, criteria) {
 }
 
 // Fonction d'initialisation de la carte
-function initMap(entities, weightings, initial_cities, method, criteria) {  
+function initMap(results, initial_cities, method, criteria) {  
     var weighting_min = 36000;
     var weighting_max = 0;
     var best_pick = '';
-    for(var i = 0; i < weightings.length; i++) {
-        if (weightings[i] < weighting_min) {
-            weighting_min = weightings[i]
-            best_pick = entities[i]["fields"]["name"]
+    for(var i = 0; i < results.length; i++) {
+        if (results[i]["value"] < weighting_min) {
+            weighting_min = results[i]["value"]
+            best_pick = results[i]["name"]
         }
-        if (weightings[i] > weighting_max) {
-            weighting_max = weightings[i]
+        if (results[i]["value"] > weighting_max) {
+            weighting_max = results[i]["value"]
         }
     }
 
@@ -102,8 +102,8 @@ function initMap(entities, weightings, initial_cities, method, criteria) {
     }).addTo(macarte);
 
     // Polygons
-    for(var i = 0; i < entities.length; i++) {
-        addPolygonToCard(macarte, entities[i]["fields"], weightings[i], weighting_min, method, criteria);
+    for(var i = 0; i < results.length; i++) {
+        addPolygonToCard(macarte, results[i], weighting_min, method, criteria);
     }
 
     // Markers
