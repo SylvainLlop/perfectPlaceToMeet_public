@@ -25,7 +25,7 @@ class JourneyForm(forms.Form):
         data = self.cleaned_data['nb_people']
         city_data = self.cleaned_data['city']
         if data is None and city_data is not None:
-            raise ValidationError("Le nombre de personnes ne peut pas être vide")
+            raise ValidationError("Le nombre de personnes ne peut pas être vide si une ville est renseignée")
         
         return data
 
