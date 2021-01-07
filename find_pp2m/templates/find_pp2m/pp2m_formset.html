@@ -18,7 +18,7 @@
         <table>
             <tr>
                 <td align="center">
-                    Pour gagner en rapidité, seulement les préféctures et sous-préfectures sont disponibles pour le calcul
+                    Pour gagner en rapidité, les distances sont calculées depuis les préfectures et sous-préfectures rattachées aux villes françaises.
                 </td>
             </tr>
         </table>
@@ -27,9 +27,9 @@
 
         <table width=100%><tbody>
             <tr>
-                <td width="60%" align="center"><img src="{% static 'find_pp2m/images/icon_location.png' %}" alt="Ville" height="30px"></td>
-                <td width="10%" align="center"><img src="{% static 'find_pp2m/images/icon_people.png' %}" alt="Nb de personnes" height="30px"></td>
-                <td width="20%" align="center"><img src="{% static 'find_pp2m/images/icon_conveyance.png' %}" alt="Moyen de transport" height="30px"></td>
+                <td width="40%" align="center"><img src="{% static 'find_pp2m/images/icon_location.png' %}" alt="Ville" height="30px"></td>
+                <td width="20%" align="center"><img src="{% static 'find_pp2m/images/icon_people.png' %}" alt="Nb de personnes" height="30px"></td>
+                <td width="30%" align="center"><img src="{% static 'find_pp2m/images/icon_conveyance.png' %}" alt="Moyen de transport" height="30px"></td>
                 <td width="10%" align="center"></td>
             </tr>
         </tbody></table>
@@ -40,9 +40,9 @@
             <table width=100% class="form-row" id={{form.initial.id}}><tbody>  <!--id={{form.initial.id}}-->
                 {{ form.errors }}
                 <tr>
-                    <td width="60%" align="center" class="formcity">{{form.city}}</td>
-                    <td width="10%" align="center">{{form.nb_people}}</td>
-                    <td width="20%" align="center">{{form.conveyance}}</td>
+                    <td width="40%" align="center" class="formcity">{{form.city}}</td>
+                    <td width="20%" align="center">{{form.nb_people}}</td>
+                    <td width="30%" align="center">{{form.conveyance}}</td>
                     <td width="10%" align="center"><button class="remove-form-row">-</button></td>
                 </tr>
             </tbody></table>
@@ -88,7 +88,7 @@
                     <td width="45%" align="center"><img src="{% static 'find_pp2m/images/img_individual.png' %}" alt="Infos" height="120px"></td>
                 </tr>
                 <tr>
-                    <td colspan="3" align="center"><b>Critère mixte</b></td>
+                    <td colspan="3" align="center"><b><br>Critère mixte</b></td>
                 </tr>
                 <tr>
                     <td colspan="3" align="center">
@@ -193,13 +193,18 @@
     });
 
     function show_hide_id(id_name) {
-            if (document.getElementById(id_name).style.display == "") {
-                document.getElementById(id_name).style.display = "none"
-            } else {
-                document.getElementById(id_name).style.display = ""
-            }
+        if (document.getElementById(id_name).style.display == "") {
+            setTimeout(function() {
+                document.getElementById(id_name).style.display = "none";
+            }, 300);
+        } else {
+            setTimeout(function() {
+                document.getElementById(id_name).style.display = "";
+            }, 100);
         }
+    }
     </script>
+
 
 {% endblock %}--!>
 
