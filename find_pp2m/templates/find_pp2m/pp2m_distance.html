@@ -75,7 +75,6 @@
 
         <!-- Results -->
         <div>
-            <p align="center">Résultats <script>document.write(strmethod)</script> :</p>
             <table id="TopResults" class="resultsTable" style="max-width:600px" align="center"></table>
         </div>
 
@@ -157,15 +156,15 @@
                 // Titre
                 var myHTML = '<p><b>Rappel des paramètres de calcul</b></p>';
                 // Villes de départ
-                myHTML += '<p><b>Villes de départ:</b> ';
+                myHTML += '<p><b>Villes de départ :</b> ';
                 for(var i = 0; i < initial_cities.length; i++) {
                     myHTML += initial_cities[i]["fields"]["name"] + ' (x' + nbpeople[i].toString() + '), ';
                 }
                 myHTML = myHTML.substring(0, myHTML.length - 2) + '</p>';
                 // Méthode
-                myHTML += '<p><b>Méthode de calcul:</b> ' + strmethod + '</p>';
+                myHTML += '<p><b>Méthode de calcul :</b> ' + strmethod + '</p>';
                 // Critère
-                myHTML += "<p><b>Critère d'optimisation:</b> " + strcriteria + '</p>';
+                myHTML += "<p><b>Critère d'optimisation :</b> " + strcriteria + '</p>';
 
                 wrapper.innerHTML = myHTML;
             }
@@ -173,7 +172,7 @@
 
         <table align="center">
             <tr><td align="center" colspan="2">
-                Modifier le critère d'optimisation:
+                Modifier le critère d'optimisation :
             </td></tr>
             <tr>
                 <td id="btn_mixed" style="display: none;">
