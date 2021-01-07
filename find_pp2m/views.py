@@ -137,17 +137,22 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
         'results_mix': results_json['mix']
     })
 
+
 def pp2m_form(request):
-    JourneyFormSet = formset_factory(JourneyForm, extra=3, can_delete=True)
+    JourneyFormSet = formset_factory(JourneyForm, extra=1, min_num=2, validate_min=True)
     if request.method == 'POST':
         formset = JourneyFormSet(request.POST, request.FILES)
         paramForm = ParamForm(request.POST)
 
         if formset.is_valid() and paramForm.is_valid():
+            print(formset.cleaned_data)
             cities_dict = [form.cleaned_data for form in formset if len(form.cleaned_data) > 0]
-
+            cities_dict = [item for item in cities_dict if item['city'] is not None]
+ 
             method = paramForm.cleaned_data['method']
             criteria = paramForm.cleaned_data['criteria']
+
+            print(cities_dict)
 
             return pp2m_search(request, cities_dict, method, criteria)
 
