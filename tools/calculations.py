@@ -69,10 +69,13 @@ def get_cities_weightings(departure_cities_dict, method, mixed_criteria=True):
     # Get raw values for major cities
     db_method = method.replace('route_', '')
     columns_list = ['departure', 'arrival', 'value']
-    dep_cities_df = pd.DataFrame.from_records(
-        Journey.objects.filter(departure__in=dep_cities_list).values_list('departure', 'arrival', db_method), 
-        columns=columns_list
-    )
+    dep_cities_df = pd.DataFrame()
+    for dep_city in dep_cities_list:
+        dep_city_df = pd.DataFrame.from_records(
+            Journey.objects.filter(departure=dep_city).values_list('departure', 'arrival', db_method), 
+            columns=columns_list
+        )
+        dep_cities_df = dep_cities_df.append(dep_city_df)
 
     # Convert distance and duration in kms and hours
     if db_method == 'distance':
