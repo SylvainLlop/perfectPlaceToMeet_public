@@ -115,7 +115,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
     # Convert in JSON
     dep_cities_list = [x['city'] for x in dep_cities_dict]
     dep_cities_nbpeople = [x['nb_people'] for x in dep_cities_dict]
-    cities_json = serializers.serialize('json', dep_cities_list, fields=('name', 'latitude', 'longitude'))
+    cities_json = serializers.serialize('json', dep_cities_list, fields=('name', 'latitude', 'longitude', 'pref_name'))
     nbpeople_json = json.dumps(dep_cities_nbpeople)
     method_json = json.dumps(method)
     criteria_json = json.dumps(criteria)
