@@ -63,8 +63,9 @@ def get_cities_weightings_old(departure_cities_dict, all_cities_list, method):
 
 def get_cities_weightings(departure_cities_dict, method, mixed_criteria=True):
     
+    print(departure_cities_dict)
     nb_cities = sum([int(city['nb_people']) for city in departure_cities_dict])
-    dep_cities_list = [x['city'].name for x in departure_cities_dict]
+    dep_cities_list = [x['city'].pref_name for x in departure_cities_dict]
 
     # Get raw values for major cities
     db_method = method.replace('route_', '')
