@@ -152,7 +152,11 @@
                 // Villes de départ
                 myHTML += '<p><b>Villes de départ :</b> ';
                 for(var i = 0; i < initial_cities.length; i++) {
-                    myHTML += initial_cities[i]["fields"]["name"] + ' (x' + nbpeople[i].toString() + '), ';
+                    if (initial_cities[i]["fields"]["name"] == initial_cities[i]["fields"]["pref_name"]) {
+                        myHTML += initial_cities[i]["fields"]["name"] + ' (x' + nbpeople[i].toString() + '), ';
+                    } else {
+                        myHTML += initial_cities[i]["fields"]["name"] + ' (' + initial_cities[i]["fields"]["pref_name"] +') (x' + nbpeople[i].toString() + '), ';
+                    }
                 }
                 myHTML = myHTML.substring(0, myHTML.length - 2) + '</p>';
                 // Méthode

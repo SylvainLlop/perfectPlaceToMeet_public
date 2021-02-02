@@ -115,7 +115,7 @@ def pp2m_search(request, dep_cities_dict, method, criteria):
     # Convert in JSON
     dep_cities_list = [x['city'] for x in dep_cities_dict]
     dep_cities_nbpeople = [x['nb_people'] for x in dep_cities_dict]
-    cities_json = serializers.serialize('json', dep_cities_list, fields=('name', 'latitude', 'longitude'))
+    cities_json = serializers.serialize('json', dep_cities_list, fields=('name', 'latitude', 'longitude', 'pref_name'))
     nbpeople_json = json.dumps(dep_cities_nbpeople)
     method_json = json.dumps(method)
     criteria_json = json.dumps(criteria)
@@ -145,14 +145,11 @@ def pp2m_form(request):
         paramForm = ParamForm(request.POST)
 
         if formset.is_valid() and paramForm.is_valid():
-            print(formset.cleaned_data)
             cities_dict = [form.cleaned_data for form in formset if len(form.cleaned_data) > 0]
             cities_dict = [item for item in cities_dict if item['city'] is not None]
  
             method = paramForm.cleaned_data['method']
             criteria = paramForm.cleaned_data['criteria']
-
-            print(cities_dict)
 
             return pp2m_search(request, cities_dict, method, criteria)
 
