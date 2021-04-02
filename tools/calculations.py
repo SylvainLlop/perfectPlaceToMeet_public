@@ -104,9 +104,15 @@ def get_cities_weightings(departure_cities_dict, method, mixed_criteria=True):
         mix_df['value'] = mix_df['value'] - mix_df['value'].min() + 1
 
     # Sort values
-    com_df = com_df.sort_values('value')
-    ind_df = ind_df.sort_values('value')
-    mix_df = mix_df.sort_values('value')
+    com_df = com_df.rename(columns={"value": "value_com"})
+    ind_df = ind_df.rename(columns={"value": "value_ind"})
+    mix_df = mix_df.rename(columns={"value": "value_mix"})
+    results_df = pd.merge(com_df, ind_df, left_on='arrival', right_on='arrival')
+    results_df = pd.merge(results_df, mix_df, left_on='arrival', right_on='arrival')
+    com_df = results_df.sort_values('value_com')
+    ind_df = results_df.sort_values('value_ind')
+    mix_df = results_df.sort_values('value_mix')
+
 
     # Get polygons and left join on dataframes
     arr_cities_df = pd.DataFrame.from_records(
@@ -117,6 +123,9 @@ def get_cities_weightings(departure_cities_dict, method, mixed_criteria=True):
     com_df = pd.merge(com_df, arr_cities_df, left_on='arrival', right_on='name')
     ind_df = pd.merge(ind_df, arr_cities_df, left_on='arrival', right_on='name')
     mix_df = pd.merge(mix_df, arr_cities_df, left_on='arrival', right_on='name')
+    print(com_df.head(10))
+    print(ind_df.head(10))
+    print(mix_df.head(10))
 
     # Return dataframes as dictionnary
     df_dict = {
