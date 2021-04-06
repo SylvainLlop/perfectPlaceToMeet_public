@@ -41,31 +41,39 @@
                 var strcriteria = 'minimiser le trajet le plus long';
             }
 
-            function writeTabResults(results, method, straverage, criteria) {
+            function writeTabResults(results, method, criteria) {
                 var wrapper = document.getElementById("TopResults");
                 var myHTML = '<thead>';
-                myHTML += '<td width="60%">Ville</td>';
-                myHTML += '<td width="20%">' + straverage + '</td>';
-                myHTML += '<td width="20%">Ecart</td>';
+                myHTML += '<td width="40%"><b>Ville</b></td>';
+                if (criteria == 'community') {
+                    myHTML += '<td width="20%"><b>Temps moyen</b></td>';
+                } else {
+                    myHTML += '<td width="20%">Temps moyen</td>';
+                }
+                if (criteria == 'individual') {
+                    myHTML += '<td width="20%"><b>Temps maximal</b></td>';
+                } else {
+                    myHTML += '<td width="20%">Temps maximal</td>';
+                }
+                if (criteria == 'mixed') {
+                    myHTML += '<td width="20%"><b>Critère mixte calculé</b></td>';
+                } else {
+                    myHTML += '<td width="20%">Critère mixte calculé</td>';
+                }
                 myHTML += '</thead>';
                 var i = 0;
                 do {
-                    var composed_value = retrieveFormatedValue(results[i]["value"], method, criteria);
+                    var composed_value_com = retrieveFormatedValue(results[i]["value_com"], method, 'community');
+                    var composed_value_ind = retrieveFormatedValue(results[i]["value_ind"], method, 'individual');
+                    var composed_value_mix = retrieveFormatedValue(results[i]["value_mix"], method, 'mixed');
                     var plusvalue = 100 * (results[i]["value"] - results[0]["value"]) / results[0]["value"];
                     myHTML += '<tr>';
                     myHTML += '<td align="center">' + results[i]["name"] + '</td>';
-                    myHTML += '<td align="center">' + composed_value + '</td>';
-                    if (i == 0) {
-                        myHTML += '<td align="center">-</td>';
-                    } else {
-                        myHTML += '<td align="center"> +' + plusvalue.toFixed(1) + '%</td>';
-                    }
-                    myHTML += '</tr>';
-                    if (i == 9) {
-                        break;
-                    }
+                    myHTML += '<td align="center">' + composed_value_com + '</td>';
+                    myHTML += '<td align="center">' + composed_value_ind + '</td>';
+                    myHTML += '<td align="center">' + composed_value_mix + '</td>';
                     i += 1;
-                } while (results[i]["value"] < results[0]["value"] * 1.15)
+                } while (results[i]["value_mix"] < results[0]["value_mix"] * 1.15)
                 wrapper.innerHTML = myHTML;
             }
         </script>
@@ -116,7 +124,7 @@
                     document.getElementById("btn_individual").style.display = "" 
                     document.getElementById("btn_mixed").style.display = "none"      
                 }
-                writeTabResults(results, method, straverage, criteria);
+                writeTabResults(results, method, criteria);
                 initMap(results, initial_cities, method, criteria);
                 writeParameters(initial_cities, nb_people, strmethod, criteria);
             }

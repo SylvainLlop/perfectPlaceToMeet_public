@@ -28,7 +28,8 @@ SECRET_KEY = 'kml*-\x0bj@}1roAk,bh3/ZA4\x0bbfs-v]aP\x0cseM2TlT_MwM#VL{r+F'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['theperfectplacetomeet.herokuapp.com']
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
